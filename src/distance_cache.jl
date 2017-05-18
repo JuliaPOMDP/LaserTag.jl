@@ -8,14 +8,14 @@ function find_distances(f::Floor, obstacles::Set{Coord}, s::LTState)
     diag = MVector{4, Int}()
     for i in 1:4
         d = 1
-        while !opaque(f, obstacles, s, s.robot+(d)*CARDINALS[i])
+        while !opaque(f, obstacles, s, s.robot+d*CARDINALS[i])
             d += 1
         end
         card[i] = d-1
     end
     for i in 1:4
         d = 1
-        while !opaque(f, obstacles, s, s.robot+(d)*DIAGONALS[i])
+        while !opaque(f, obstacles, s, s.robot+d*DIAGONALS[i])
             d += 1
         end
         diag[i] = d-1

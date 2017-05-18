@@ -11,8 +11,13 @@ importall POMDPs
 export
     LaserTagPOMDP,
     MoveTowards,
+    MoveTowardsSampled,
     Coord,
-    TagState
+    LTState,
+    LaserTagVis,
+
+    gen_lasertag,
+    tikz_pic
 
 
 typealias Coord SVector{2, Int}
@@ -39,13 +44,12 @@ function Base.hash(o::CLTObs, h::UInt)
 end
 =#
 
-
 immutable Floor
     n_rows::Int
     n_cols::Int
 end
 
-inside(f::Floor, c::Coord) = 0 < c[1] <= f.n_cols && 0 < c[2] < f.n_rows
+inside(f::Floor, c::Coord) = 0 < c[1] <= f.n_cols && 0 < c[2] <= f.n_rows
 
 include("distance_cache.jl")
 
@@ -60,8 +64,22 @@ include("distance_cache.jl")
     dcache::LTDistanceCache = LTDistanceCache(floor, obstacles)
 end
 
-# LaserTagPOMDP() = LaserTagPOMDP{CMeas}()
-
+function gen_lasertag(n_rows::Int=7, n_cols::Int=11, n_obstacles::Int=8; rng=Base.GLOBAL_RNG, kwargs...)
+    f = Floor(n_rows, n_cols)
+    obs_inds = randperm(rng, n_pos(f))[1:n_obstacles] # XXX inefficient
+    obs_subs = ind2sub((n_cols, n_rows), obs_inds)
+    obstacles = Set{Coord}(Coord(p) for p in zip(obs_subs...))
+    for c in obstacles
+        if !inside(f, c)
+            @show c
+            @show obs_inds
+            @show obs_subs
+            error("not inside")
+        end
+    end
+    r = Coord(rand(rng, 1:f.n_cols), rand(rng, 1:f.n_rows))
+    return LaserTagPOMDP(;floor=f, obstacles=obstacles, robot_init=r, kwargs...)
+end
 
 opaque(p::LaserTagPOMDP, s::LTState, c::Coord) = opaque(p.floor, p.obstacles, s, c)
 
@@ -96,7 +114,7 @@ generate_s(p::LaserTagPOMDP, s::LTState, a::Int, rng::AbstractRNG) = first(gener
 
 function generate_sr(p::LaserTagPOMDP, s::LTState, a::Int, rng::AbstractRNG)
     terminal = false
-    if a == :tag
+    if a == TAG_ACTION
         if s.robot == s.opponent
             reward = p.tag_reward
             terminal = true
@@ -140,7 +158,7 @@ function generate_sr(p::LaserTagPOMDP, s::LTState, a::Int, rng::AbstractRNG)
 
     rob = add_if_inside(p.floor, rob, ACTION_DIRS[a])
 
-    return LTState(rob, opp, terminal), reward
+    return LTState(rob, opp_next, terminal), reward
 end
 
 function add_if_inside(f::Floor, x::Coord, dx::Coord)
@@ -155,5 +173,6 @@ isterminal(p::LaserTagPOMDP, s::LTState) = s.terminal
 discount(p::LaserTagPOMDP) = p.discount
 
 include("heuristics.jl")
+include("visualization.jl")
 
 end # module

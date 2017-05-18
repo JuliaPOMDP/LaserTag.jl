@@ -12,6 +12,8 @@ const ACTION_NAMES = SVector("north",
                              "northwest",
                              "tag")
 
+const TAG_ACTION = 9
+
 const ACTION_DIRS = SVector(Coord(0,1),
                             Coord(0,-1),
                             Coord(1,0),

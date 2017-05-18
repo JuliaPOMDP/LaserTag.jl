@@ -30,7 +30,7 @@ function pdf(d::CLTObsDist, m::CMeas)
     # diff[5:8] = m[5:8] - d.distances.diagonal*sqrt(2)
     # return prod(pdf(nd, diff))
     diff = m - vcat(float(d.distances.cardinal), d.distances.diagonal*sqrt(2))
-    return exp(sum(-diff.^2/(2*d.std)))
+    return exp(sum(-diff.^2/(2*d.std^2)))
 end
 
 function observation(p::LaserTagPOMDP, s::LTState, a::Int, sp::LTState)
