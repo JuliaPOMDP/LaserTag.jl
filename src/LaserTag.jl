@@ -47,6 +47,8 @@ end
 
 inside(f::Floor, c::Coord) = 0 < c[1] <= f.n_cols && 0 < c[2] < f.n_rows
 
+include("distance_cache.jl")
+
 @with_kw immutable LaserTagPOMDP <: POMDP{LTState, Int, CMeas}
     tag_reward::Float64     = 10.0
     step_cost::Float64      = 1.0
@@ -55,26 +57,16 @@ inside(f::Floor, c::Coord) = 0 < c[1] <= f.n_cols && 0 < c[2] < f.n_rows
     reading_std::Float64    = 2.5
     obstacles::Set{Coord}   = Set{Coord}()
     robot_init::Coord       = Coord(1,1)
-    # distance_cache::LTDistanceCache = LTDistanceCache()
+    dcache::LTDistanceCache = LTDistanceCache(floor, obstacles)
 end
 
 # LaserTagPOMDP() = LaserTagPOMDP{CMeas}()
 
-function state_index(p::LaserTagPOMDP, s::LTState)
-    nr = p.floor.n_rows
-    nc = p.floor.n_cols
-    n_pos = nr^2*f.nc^2
-    if s.terminal
-        return n_pos+1
-    else
-        rob = s.robot
-        opp = s.opponent
-        return sub2ind((nc,nr,nc,nr), rob[1], rob[2], opp[1], opp[2])
-    end
-end
 
-function opaque(p::LaserTagPOMDP, s::LTState, c::Coord)
-    if opaque(p, c)
+opaque(p::LaserTagPOMDP, s::LTState, c::Coord) = opaque(p.floor, p.obstacles, s, c)
+
+function opaque(floor::Floor, obstacles::Set{Coord}, s::LTState, c::Coord)
+    if opaque(floor, obstacles, c)
         return true
     elseif c == s.opponent
         return true
@@ -83,16 +75,19 @@ function opaque(p::LaserTagPOMDP, s::LTState, c::Coord)
     end
 end
 
-function opaque(p::LaserTagPOMDP, c::Coord)
-    if !inside(p.floor, c)
+function opaque(f::Floor, obstacles::Set{Coord}, c::Coord)
+    if !inside(f, c)
         return true
-    elseif c in p.obstacles
+    elseif c in obstacles
         return true
     else
         return false
     end
 end
 
+find_distances(p::LaserTagPOMDP, s::LTState) = find_distances(p.floor, p.obstacles, s)
+
+include("states.jl")
 include("actions.jl")
 include("observations.jl")
 include("initial.jl")

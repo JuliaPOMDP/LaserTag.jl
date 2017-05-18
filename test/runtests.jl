@@ -3,7 +3,7 @@ using Base.Test
 using POMDPToolbox
 using ParticleFilters
 
-p = LaserTagPOMDP()
+@time p = LaserTagPOMDP()
 
 pol = RandomPolicy(p, rng=MersenneTwister(1))
 

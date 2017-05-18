@@ -1,45 +1,3 @@
-#=
-type LTDistanceCache
-    distances::Nullable{Vector{SVector{8, Int}}}
-end
-LTDistanceCache() = LTDistanceCache(nothing)
-
-function fill_cache!(c::LTDistanceCache, p::LaserTagPOMDP)
-    dists = Array(SVector{8, Int}, n_states(p))
-    for iterator(states(p))
-        
-    end
-end
-
-function getindex(c::LTDistanceCache, s::LTState)
-    get(c.distances)
-end
-=#
-
-immutable ClearDistances
-    cardinal::SVector{4, Int}
-    diagonal::SVector{4, Int}
-end
-
-function find_distances(p::LaserTagPOMDP, s::LTState)
-    card = MVector{4, Int}()
-    diag = MVector{4, Int}()
-    for i in 1:4
-        d = 1
-        while !opaque(p, s, s.robot+(d)*CARDINALS[i])
-            d += 1
-        end
-        card[i] = d-1
-    end
-    for i in 1:4
-        d = 1
-        while !opaque(p, s, s.robot+(d)*DIAGONALS[i])
-            d += 1
-        end
-        diag[i] = d-1
-    end
-    return ClearDistances(card, diag)
-end
 
 immutable CLTObsDist
     same::Bool
@@ -66,17 +24,19 @@ function pdf(d::CLTObsDist, m::CMeas)
     elseif m == C_SAME_LOC
         return 0.0
     end
-    nd = Normal(0.0, d.std)
-    diff = MVector{8, Float64}()
-    diff[1:4] = m[1:4] - d.distances.cardinal
-    diff[5:8] = m[5:8] - d.distances.diagonal*sqrt(2)
-    return prod(pdf(nd, diff))
+    # nd = Normal(0.0, d.std)
+    # diff = MVector{8, Float64}()
+    # diff[1:4] = m[1:4] - d.distances.cardinal
+    # diff[5:8] = m[5:8] - d.distances.diagonal*sqrt(2)
+    # return prod(pdf(nd, diff))
+    diff = m - vcat(float(d.distances.cardinal), d.distances.diagonal*sqrt(2))
+    return exp(sum(-diff.^2/(2*d.std)))
 end
 
 function observation(p::LaserTagPOMDP, s::LTState, a::Int, sp::LTState)
     if sp.robot == sp.opponent
         return CLTObsDist(true)
     end
-    distances = find_distances(p, sp)
+    distances = p.dcache[sp]
     return CLTObsDist(distances, p.reading_std)
 end
