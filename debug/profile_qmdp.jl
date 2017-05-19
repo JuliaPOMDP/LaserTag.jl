@@ -17,7 +17,7 @@ solver = QMDPSolver(max_iterations=1000)
 
 sim = HistoryRecorder(max_steps=5, rng=MersenneTwister(2), show_progress=true)
 
-filter = DiscreteUpdater(p)
+filter = SIRParticleFilter(p, 10000)
 
 #=
 b = initialize_belief(filter, initial_state_distribution(p))

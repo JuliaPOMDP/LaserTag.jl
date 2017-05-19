@@ -9,13 +9,18 @@ using Distributions
 
 importall POMDPs
 
+using POMCP
+import POMCP: init_N, init_V
+
 export
     LaserTagPOMDP,
-    MoveTowards,
-    MoveTowardsSampled,
     Coord,
     LTState,
     LaserTagVis,
+
+    MoveTowards,
+    MoveTowardsSampled,
+    InevitableInit,
 
     gen_lasertag,
     tikz_pic
