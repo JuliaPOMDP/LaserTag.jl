@@ -1,8 +1,10 @@
-function states(p::LaserTagPOMDP) # inefficient?
-    vec = Array(LTState, n_states(p))
-    for i in 1:p.n_cols, j in 1:p.n_rows, k in 1:p.n_cols, l in 1:p.n_rows
+states(p::LaserTagPOMDP) = states(p.floor)
+
+function states(f::Floor) # inefficient?
+    vec = Array(LTState, n_pos(f)^2+1)
+    for i in 1:f.n_cols, j in 1:f.n_rows, k in 1:f.n_cols, l in 1:f.n_rows
         s = LTState(Coord(i,j), Coord(k,l), false)
-        vec[state_index(p, s)] = s
+        vec[state_index(f, s)] = s
     end
     vec[end] = LTState(Coord(1,1), Coord(1,1), true)    
     return vec

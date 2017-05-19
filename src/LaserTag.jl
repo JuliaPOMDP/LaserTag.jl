@@ -4,6 +4,7 @@ module LaserTag
 using StaticArrays
 using AutoHashEquals
 using Parameters
+using StatsBase
 using Distributions
 
 importall POMDPs
@@ -27,7 +28,7 @@ typealias DMeas MVector{8, Int}
 const C_SAME_LOC = fill!(MVector{8, Float64}(), -1.0)
 const D_SAME_LOC = fill!(MVector{8, Float64}(), -1)
 
-@auto_hash_equals immutable LTState
+@auto_hash_equals immutable LTState # XXX auto_hash_equals isn't correct for terminal
     robot::Coord
     opponent::Coord
     terminal::Bool
@@ -50,6 +51,15 @@ immutable Floor
 end
 
 inside(f::Floor, c::Coord) = 0 < c[1] <= f.n_cols && 0 < c[2] <= f.n_rows
+
+function add_if_inside(f::Floor, x::Coord, dx::Coord)
+    if inside(f, x + dx)
+        return x + dx
+    else
+        return x
+    end
+end
+
 
 include("distance_cache.jl")
 
@@ -107,9 +117,31 @@ find_distances(p::LaserTagPOMDP, s::LTState) = find_distances(p.floor, p.obstacl
 
 include("states.jl")
 include("actions.jl")
+include("transition.jl")
 include("observations.jl")
 include("initial.jl")
 
+function reward(p::LaserTagPOMDP, s::LTState, a::Int, sp::LTState)
+    if a == TAG_ACTION
+        if s.robot == s.opponent
+            @assert sp.terminal
+            return p.tag_reward
+        else
+            return -p.tag_reward
+        end
+    else
+        return -p.step_cost
+    end
+end
+
+isterminal(p::LaserTagPOMDP, s::LTState) = s.terminal
+discount(p::LaserTagPOMDP) = p.discount
+
+include("heuristics.jl")
+include("visualization.jl")
+
+
+#=
 generate_s(p::LaserTagPOMDP, s::LTState, a::Int, rng::AbstractRNG) = first(generate_sr(p, s, a, rng))
 
 function generate_sr(p::LaserTagPOMDP, s::LTState, a::Int, rng::AbstractRNG)
@@ -160,19 +192,6 @@ function generate_sr(p::LaserTagPOMDP, s::LTState, a::Int, rng::AbstractRNG)
 
     return LTState(rob, opp_next, terminal), reward
 end
-
-function add_if_inside(f::Floor, x::Coord, dx::Coord)
-    if inside(f, x + dx)
-        return x + dx
-    else
-        return x
-    end
-end
-
-isterminal(p::LaserTagPOMDP, s::LTState) = s.terminal
-discount(p::LaserTagPOMDP) = p.discount
-
-include("heuristics.jl")
-include("visualization.jl")
+=#
 
 end # module

@@ -4,13 +4,13 @@ using POMDPToolbox
 using ParticleFilters
 using ProfileView
 
-p = LaserTagPOMDP()
+p = gen_lasertag(3,4,2)
 
 pol = RandomPolicy(p, rng=MersenneTwister(1))
 
 sim = RolloutSimulator(max_steps=100, rng=MersenneTwister(2))
 
-filter = SIRParticleFilter(p, 100_000)
+filter = DiscreteUpdater(p)
 
 @time simulate(sim, p, pol, filter)
 @time simulate(sim, p, pol, filter)

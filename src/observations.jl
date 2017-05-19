@@ -33,7 +33,7 @@ function pdf(d::CLTObsDist, m::CMeas)
     return exp(sum(-diff.^2/(2*d.std^2)))
 end
 
-function observation(p::LaserTagPOMDP, s::LTState, a::Int, sp::LTState)
+function observation(p::LaserTagPOMDP, sp::LTState)
     if sp.robot == sp.opponent
         return CLTObsDist(true)
     end
