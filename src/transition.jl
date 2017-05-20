@@ -104,7 +104,7 @@ function transition(p::LaserTagPOMDP, s::LTState, a::Int)
         end
     elseif opp[1] > rob[1] && inside(f, opp + Coord(1,0))
         probs[3] += 0.4
-    elseif inside(f, opp + Coord(-1,0))
+    elseif opp[1] < rob[1] && inside(f, opp + Coord(-1,0))
         probs[4] += 0.4
     end
 
@@ -118,7 +118,7 @@ function transition(p::LaserTagPOMDP, s::LTState, a::Int)
         end
     elseif opp[2] > rob[2] && inside(f, opp + Coord(0,1))
         probs[1] += 0.4
-    elseif inside(f, opp + Coord(0,-1))
+    elseif opp[2] < rob[2] && inside(f, opp + Coord(0,-1))
         probs[2] += 0.4
     end
 
