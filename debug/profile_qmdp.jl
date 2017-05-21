@@ -11,6 +11,8 @@ p = gen_lasertag()
 solver = QMDPSolver(max_iterations=1000)
 @time pol = solve(solver, p, verbose=true)
 
+@show value(pol, initial_state_distribution(p))
+
 # Profile.clear()
 # @profile solve(solver, p, verbose=true)
 # ProfileView.view()

@@ -16,6 +16,7 @@ export
     LaserTagPOMDP,
     Coord,
     LTState,
+    CMeas,
     LaserTagVis,
 
     MoveTowards,
