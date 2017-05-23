@@ -23,11 +23,6 @@ function pdf(d::CLTObsDist, m::CMeas)
     elseif m == C_SAME_LOC
         return 0.0
     end
-    # nd = Normal(0.0, d.std)
-    # diff = MVector{8, Float64}()
-    # diff[1:4] = m[1:4] - d.distances.cardinal
-    # diff[5:8] = m[5:8] - d.distances.diagonal*sqrt(2)
-    # return prod(pdf(nd, diff))
     diff = m - vcat(float(d.distances.cardinal), d.distances.diagonal*sqrt(2))
     return exp(sum(-diff.^2/(2*d.std^2)))
 end

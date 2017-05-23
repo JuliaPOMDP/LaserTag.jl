@@ -60,27 +60,6 @@ function Base.next(d::LTTransDist, i::Int)
     end
 end
 
-#=
-function iterator(d::LTTransDist)
-    if d.terminal
-        return LTState[LTState(d.rob, d.prev_opp, true)]
-        # MVector{5, LTState}(LTState(d.rob, d.prev_opp, true),
-        #                     LTState(Coord(1,1), Coord(1,1), false),
-        #                     LTState(Coord(1,2), Coord(1,1), false)
-        #                     LTState(Coord(1,1), Coord(1,2), false)
-        #                     LTState(Coord(1,2), Coord(1,1), false))
-        # XXX hack
-    end
-    # return vcat(collect(LTState(d.rob, d.prev_opp+CARDINALS[i], false) for i in 1:4), LTState(d.rob, d.prev_opp, false))
-    it = Array(LTState, 5)
-    # it = MVector{5, LTState}()
-    for i in 1:4
-        it[i] = LTState(d.rob, d.prev_opp+CARDINALS[i], false)
-    end
-    it[5] = LTState(d.rob, d.prev_opp, false)
-    return it
-end
-=#
 
 function transition(p::LaserTagPOMDP, s::LTState, a::Int)
     if s.terminal || a == TAG_ACTION && s.robot == s.opponent
