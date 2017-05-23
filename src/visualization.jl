@@ -13,21 +13,6 @@ LaserTagVis(p; s=nothing, a=nothing, o=nothing, b=nothing, r=nothing) = LaserTag
 
 Base.show(io::IO, mime::MIME"image/svg+xml", v::LaserTagVis) = show(io, mime, tikz_pic(v))
 
-#=
-function colorval(val, brightness::Real = 1.0)
-  val = convert(Vector{Float64}, val)
-  x = 255 - min(255, 255 * (abs(val) ./ 10.0) .^ brightness)
-  r = 255 * ones(size(val))
-  g = 255 * ones(size(val))
-  b = 255 * ones(size(val))
-  r[val .>= 0] = x[val .>= 0]
-  b[val .>= 0] = x[val .>= 0]
-  g[val .< 0] = x[val .< 0]
-  b[val .< 0] = x[val .< 0]
-  (r, g, b)
-end
-=#
-
 function fill_square(o::IO, x, y, color, opacity=0.5) # maybe opacity should be a keyword
     sqsize = 1.0
     println(o, "\\fill[$(color), opacity=$opacity] ($((x-1) * sqsize),$((y-1) * sqsize)) rectangle +($sqsize,$sqsize);")
