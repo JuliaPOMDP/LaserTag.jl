@@ -13,7 +13,7 @@ function rand(rng::AbstractRNG, d::LTTransDist)
     if d.terminal
         return LTState(d.rob, d.prev_opp, true)
     end
-    i = sample(rng, WeightVec(d.probs, 1.0))
+    i = sample(rng, Weights(d.probs, 1.0))
     if i < 5
         opp = d.prev_opp + CARDINALS[i]
     else

@@ -1,4 +1,3 @@
-
 immutable CLTObsDist
     same::Bool
     distances::ClearDistances
