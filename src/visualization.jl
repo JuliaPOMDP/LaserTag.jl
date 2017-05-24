@@ -13,6 +13,9 @@ LaserTagVis(p; s=nothing, a=nothing, o=nothing, b=nothing, r=nothing) = LaserTag
 
 Base.show(io::IO, mime::MIME"image/svg+xml", v::LaserTagVis) = show(io, mime, tikz_pic(v))
 
+# TODO use conver to do this
+# Base.show(io::IO, mime::MIME"image/png", v::LaserTagVis) = show(io, mime, tikz_pic(v))
+
 function fill_square(o::IO, x, y, color, opacity=0.5) # maybe opacity should be a keyword
     sqsize = 1.0
     println(o, "\\fill[$(color), opacity=$opacity] ($((x-1) * sqsize),$((y-1) * sqsize)) rectangle +($sqsize,$sqsize);")
