@@ -5,9 +5,10 @@ immutable LTTransDist
     probs::SVector{5, Float64} # corresponds to opp moving in the cardinal directions or staying
                      # sum(probs) is always 1!
 
-    LTTransDist(t::Bool) = new(t)
-    LTTransDist(rob::Coord, prev_opp::Coord, probs::AbstractVector) = new(false, rob, prev_opp, probs)
+    # LTTransDist(t::Bool) = new(t)
+    # LTTransDist(rob::Coord, prev_opp::Coord, probs::AbstractVector) = new(false, rob, prev_opp, probs)
 end
+LTTransDist(rob::Coord, prev_opp::Coord, probs::AbstractVector) = LTTransDist(false, rob, prev_opp, probs)
 
 function rand(rng::AbstractRNG, d::LTTransDist)
     if d.terminal
@@ -63,7 +64,7 @@ end
 
 function transition(p::LaserTagPOMDP, s::LTState, a::Int)
     if s.terminal || a == TAG_ACTION && s.robot == s.opponent
-        return LTTransDist(true)
+        return LTTransDist(true, s.robot, s.opponent, SVector(1., 0., 0., 0., 0.))
     end
 
     probs = fill!(MVector{5, Float64}(), 0.0)

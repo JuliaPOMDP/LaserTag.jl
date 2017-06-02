@@ -46,6 +46,7 @@ immutable Floor
 end
 
 inside(f::Floor, c::Coord) = 0 < c[1] <= f.n_cols && 0 < c[2] <= f.n_rows
+max_diag(f::Floor) = sqrt(f.n_rows^2 + f.n_cols^2)
 
 function add_if_inside(f::Floor, x::Coord, dx::Coord)
     if inside(f, x + dx)
@@ -55,21 +56,21 @@ function add_if_inside(f::Floor, x::Coord, dx::Coord)
     end
 end
 
-
 include("distance_cache.jl")
 
-@with_kw immutable LaserTagPOMDP <: POMDP{LTState, Int, CMeas}
-    tag_reward::Float64     = 10.0
-    step_cost::Float64      = 1.0
-    discount::Float64       = 0.95
-    floor::Floor            = Floor(7, 11)
-    reading_std::Float64    = 2.5
-    obstacles::Set{Coord}   = Set{Coord}()
-    robot_init::Coord       = Coord(1,1)
-    dcache::LTDistanceCache = LTDistanceCache(floor, obstacles)
+@with_kw immutable LaserTagPOMDP{M<:Union{CMeas, DMeas}} <: POMDP{LTState, Int, M}
+    tag_reward::Float64         = 10.0
+    step_cost::Float64          = 1.0
+    discount::Float64           = 0.95
+    floor::Floor                = Floor(7, 11)
+    reading_std::Float64        = 2.5
+    obstacles::Set{Coord}       = Set{Coord}()
+    robot_init::Coord           = Coord(1,1)
+    dcache::LTDistanceCache     = LTDistanceCache(floor, obstacles)
+    cdf::Nullable{ReadingCDF}   = nothing
 end
 
-function gen_lasertag(n_rows::Int=7, n_cols::Int=11, n_obstacles::Int=8; rng=Base.GLOBAL_RNG, kwargs...)
+function gen_lasertag(n_rows::Int=7, n_cols::Int=11, n_obstacles::Int=8; discrete=false, rng=Base.GLOBAL_RNG, kwargs...)
     f = Floor(n_rows, n_cols)
     obs_inds = randperm(rng, n_pos(f))[1:n_obstacles] # XXX inefficient
     obs_subs = ind2sub((n_cols, n_rows), obs_inds)
@@ -83,7 +84,11 @@ function gen_lasertag(n_rows::Int=7, n_cols::Int=11, n_obstacles::Int=8; rng=Bas
         end
     end
     r = Coord(rand(rng, 1:f.n_cols), rand(rng, 1:f.n_rows))
-    return LaserTagPOMDP(;floor=f, obstacles=obstacles, robot_init=r, kwargs...)
+    if discrete
+        return LaserTagPOMDP{DMeas}(;floor=f, obstacles=obstacles, robot_init=r, kwargs...)
+    else
+        return LaserTagPOMDP{CMeas}(;floor=f, obstacles=obstacles, robot_init=r, kwargs...)
+    end
 end
 
 opaque(p::LaserTagPOMDP, s::LTState, c::Coord) = opaque(p.floor, p.obstacles, s, c)

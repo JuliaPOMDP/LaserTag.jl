@@ -10,11 +10,21 @@ type LaserTagVis
     r::Nullable{Any}
 end
 LaserTagVis(p; s=nothing, a=nothing, o=nothing, b=nothing, r=nothing) = LaserTagVis(p, s, a, o, b, r)
+LaserTagVis(p::LaserTagPOMDP, spobp::Tuple) = LaserTagVis(p, spobp[1], nothing, spobp[2], spobp[3], nothing)
 
 Base.show(io::IO, mime::MIME"image/svg+xml", v::LaserTagVis) = show(io, mime, tikz_pic(v))
 
-# TODO use conver to do this
-# Base.show(io::IO, mime::MIME"image/png", v::LaserTagVis) = show(io, mime, tikz_pic(v))
+function Base.show(io::IO, mime::MIME"image/png", v::LaserTagVis)
+    fname = tempname()
+    save(PDF(fname), tikz_pic(v))
+    run(`convert -flatten $(fname*".pdf") $(fname*".png")`)
+    open(fname*".png") do f
+        write(io, readstring(f))
+    end
+    run(`rm $(fname*".pdf")`)
+    run(`rm $(fname*".png")`)
+    return io
+end
 
 function fill_square(o::IO, x, y, color, opacity=0.5) # maybe opacity should be a keyword
     sqsize = 1.0
@@ -66,6 +76,10 @@ function tikz_pic(v::LaserTagVis)
     o = IOBuffer()
     sqsize=1
 
+    println(o, "\\begin{scope}")
+
+    println(o, "\\clip (0,0) rectangle ($(f.n_cols*sqsize),$(f.n_rows*sqsize));")
+
     for c in p.obstacles
         fill_square(o, c[1], c[2], "gray")
     end
@@ -99,6 +113,9 @@ function tikz_pic(v::LaserTagVis)
     # println(o, "\\node[above right] at ($((xval-1) * sqsize), $((yval-1) * sqsize)) {\$$(vs)\$};")
 
     println(o, "\\draw[black] grid($(f.n_cols), $(f.n_rows));")
-    tikzDeleteIntermediate(false)
+
+    println(o, "\\end{scope}")
+
+    tikzDeleteIntermediate(true)
     return TikzPicture(takebuf_string(o), options="scale=1.25")
 end
