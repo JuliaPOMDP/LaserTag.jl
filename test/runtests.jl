@@ -2,6 +2,7 @@ using LaserTag
 using Base.Test
 using POMDPToolbox
 using ParticleFilters
+using POMDPs
 
 @time p = gen_lasertag()
 
@@ -27,3 +28,5 @@ filter = SIRParticleFilter(p, 10000)
 hist = simulate(sim, p, pol, filter)
 
 tikz_pic(LaserTagVis(p))
+
+@code_warntype generate_sor(p, initial_state(p, MersenneTwister(4)), 1, MersenneTwister(4))

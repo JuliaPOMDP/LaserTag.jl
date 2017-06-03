@@ -9,14 +9,12 @@ using Distributions
 
 importall POMDPs
 
-using POMCP
-import POMCP: init_N, init_V
-
 export
     LaserTagPOMDP,
     Coord,
     LTState,
     CMeas,
+    DMeas,
     LaserTagVis,
 
     MoveTowards,
@@ -32,7 +30,7 @@ typealias CMeas MVector{8, Float64}
 typealias DMeas MVector{8, Int}
 
 const C_SAME_LOC = fill!(MVector{8, Float64}(), -1.0)
-const D_SAME_LOC = fill!(MVector{8, Float64}(), -1)
+const D_SAME_LOC = fill!(MVector{8, Int64}(), -1)
 
 @auto_hash_equals immutable LTState # XXX auto_hash_equals isn't correct for terminal
     robot::Coord
