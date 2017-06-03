@@ -50,7 +50,7 @@ function show_belief(o::IO, b::ParticleCollection{LTState})
     end
 end
 
-function show_meas(o::IO, s::LTState, obs::CMeas)
+function show_meas(o::IO, s::LTState, obs::Union{CMeas,DMeas})
     middle = s.robot - 0.5
     for i in 1:4
         dir = CARDINALS[i]

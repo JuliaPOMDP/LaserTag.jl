@@ -73,7 +73,7 @@ function ReadingCDF(f::Floor,
 
     for c in 0:maxclear
         for r in 0:maxread
-            diagcdf[c+1, r+1] = (1+erf((r+0.5-sqrt(2)*c)/std*sqrt(2)))/2
+            diagcdf[c+1, r+1] = (1+erf((r+0.5-sqrt(2)*c)/(std*sqrt(2))))/2
         end
     end
 
