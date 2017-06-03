@@ -70,7 +70,14 @@ include("distance_cache.jl")
     cdf::Nullable{ReadingCDF}   = nothing
 end
 
-function gen_lasertag(n_rows::Int=7, n_cols::Int=11, n_obstacles::Int=8; discrete=false, rng=Base.GLOBAL_RNG, kwargs...)
+function gen_lasertag(n_rows::Int=7,
+                      n_cols::Int=11,
+                      n_obstacles::Int=8,
+                      reading_std::Float64=2.5;
+                      discrete=false,
+                      rng=Base.GLOBAL_RNG,
+                      kwargs...)
+
     f = Floor(n_rows, n_cols)
     obs_inds = randperm(rng, n_pos(f))[1:n_obstacles] # XXX inefficient
     obs_subs = ind2sub((n_cols, n_rows), obs_inds)
@@ -85,9 +92,18 @@ function gen_lasertag(n_rows::Int=7, n_cols::Int=11, n_obstacles::Int=8; discret
     end
     r = Coord(rand(rng, 1:f.n_cols), rand(rng, 1:f.n_rows))
     if discrete
-        return LaserTagPOMDP{DMeas}(;floor=f, obstacles=obstacles, robot_init=r, kwargs...)
+        return LaserTagPOMDP{DMeas}(;floor=f,
+                                     obstacles=obstacles,
+                                     robot_init=r, 
+                                     reading_std=reading_std,
+                                     cdf=ReadingCDF(f, reading_std),
+                                     kwargs...)
     else
-        return LaserTagPOMDP{CMeas}(;floor=f, obstacles=obstacles, robot_init=r, kwargs...)
+        return LaserTagPOMDP{CMeas}(;floor=f,
+                                     obstacles=obstacles,
+                                     robot_init=r,
+                                     reading_std=reading_std,
+                                     kwargs...)
     end
 end
 

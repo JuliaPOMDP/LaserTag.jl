@@ -45,7 +45,7 @@ end
 Base.getindex(c::LTDistanceCache, s::LTState) = c.distances[state_index(c.floor, s)]
 
 function n_clear_cells(d::ClearDistances, dir::Int)
-    if i <= 4
+    if dir <= 4
         return d.cardinal[dir]
     else
         return d.diagonal[dir-4]
@@ -53,8 +53,8 @@ function n_clear_cells(d::ClearDistances, dir::Int)
 end
 
 immutable ReadingCDF
-    cardcdf::Vector{Float64}
-    diagcdf::Vector{Float64}
+    cardcdf::Matrix{Float64}
+    diagcdf::Matrix{Float64}
 end
 
 # reading CDF
@@ -62,34 +62,36 @@ function ReadingCDF(f::Floor,
                     std::Float64,
                     maxread::Int=ceil(Int, max_diag(f)+4*std))
     maxclear = max(f.n_rows, f.n_cols) - 1
-    cardcdf = Array(Float64, maxclear + maxread + 1)
+    cardcdf = Array(Float64, maxclear + 1, maxread + 1)
+    diagcdf = Array(Float64, maxclear + 1, maxread + 1)
 
-    for noise in -maxclear:maxread
-        cardcdf[noise+maxclear+1] = (1+erf((noise+0.5-c)/(std*sqrt(2))))/2
+    for c in 0:maxclear
+        for r in 0:maxread
+            cardcdf[c+1, r+1] = (1+erf((r+0.5-c)/(std*sqrt(2))))/2
+        end
     end
 
-    diagcdf = Array(Float64, maxclear + maxread + 1)
-    for noise in -maxclear:maxread
-        diagcdf[noise+maxclear+1] = (1+erf((r+0.5-c*sqrt(2))/(std*sqrt(2))))/2
+    for c in 0:maxclear
+        for r in 0:maxread
+            diagcdf[c+1, r+1] = (1+erf((r+0.5-sqrt(2)*c)/std*sqrt(2)))/2
+        end
     end
 
     return ReadingCDF(cardcdf, diagcdf)
 end
 
 function cdf(c::ReadingCDF, dir::Int, clear::Int, reading::Int)
-    noise = reading - clear
-    maxclear = max(f.n_rows, f.n_cols) - 1
     if dir <= 4 # cardinal
-        if noise + maxclear >= length(c.cardcdf)
+        if reading > size(c.cardcdf, 2)
             return 1.0
         else
-            return c.cardcdf[noise + maxclear + 1]
+            return c.cardcdf[clear + 1, reading + 1]
         end
     else # diagonal
-        if noise + maxclear >= length(c.diagcdf)
+        if reading > size(c.diagcdf, 2)
             return 1.0
         else
-            return c.diagcdf[noise + maxclear + 1]
+            return c.diagcdf[clear + 1, reading + 1]
         end
     end
 end

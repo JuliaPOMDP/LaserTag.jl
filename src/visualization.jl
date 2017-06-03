@@ -3,14 +3,14 @@ using ParticleFilters
 
 type LaserTagVis
     p::LaserTagPOMDP
-    s::Nullable{Any}
     a::Nullable{Any}
+    r::Nullable{Any}
+    s::Nullable{Any}
     o::Nullable{Any}
     b::Nullable{Any}
-    r::Nullable{Any}
 end
-LaserTagVis(p; s=nothing, a=nothing, o=nothing, b=nothing, r=nothing) = LaserTagVis(p, s, a, o, b, r)
-LaserTagVis(p::LaserTagPOMDP, spobp::Tuple) = LaserTagVis(p, spobp[1], nothing, spobp[2], spobp[3], nothing)
+LaserTagVis(p; s=nothing, a=nothing, o=nothing, b=nothing, r=nothing) = LaserTagVis(p, a, r, s, o, b)
+LaserTagVis(p::LaserTagPOMDP, arspobp::Tuple) = LaserTagVis(p, arspobp...)
 
 Base.show(io::IO, mime::MIME"image/svg+xml", v::LaserTagVis) = show(io, mime, tikz_pic(v))
 

@@ -40,9 +40,10 @@ immutable DLTObsDist
     same::Bool
     distances::ClearDistances
     cdf::ReadingCDF
+    std::Float64
     
     DLTObsDist(same::Bool) = new(true)
-    DLTObsDist(distances::ClearDistances, cdf::ReadingCDF) = new(false, dists, cdf)
+    DLTObsDist(dists::ClearDistances, cdf::ReadingCDF, std::Float64) = new(false, dists, cdf, std)
 end
 
 function rand(rng::AbstractRNG, d::DLTObsDist)
@@ -50,12 +51,12 @@ function rand(rng::AbstractRNG, d::DLTObsDist)
         return D_SAME_LOC
     end
     meas = MVector{8, Int}()
-    meas[1:4] = round(Int, d.distances.cardinal + d.std*randn(rng, 4))
-    meas[5:8] = round(Int, d.distances.diagonal*sqrt(2) + d.std*randn(rng, 4))
+    meas[1:4] = max(0, round(Int, d.distances.cardinal + d.std*randn(rng, 4)))
+    meas[5:8] = max(0, round(Int, d.distances.diagonal*sqrt(2) + d.std*randn(rng, 4)))
     return meas
 end
 
-function pdf(d::CLTObsDist, m::DMeas)
+function pdf(d::DLTObsDist, m::DMeas)
     if d.same
         return m == D_SAME_LOC ? 1.0 : 0.0
     elseif m == D_SAME_LOC
@@ -73,11 +74,10 @@ function pdf(d::CLTObsDist, m::DMeas)
     return p
 end
 
-#=
 function observation(p::LaserTagPOMDP{DMeas}, sp::LTState)
     if sp.robot == sp.opponent
-        CLTObsDist(same) 
-        CLTObsDist(dists::ClearDistances, std::Float64) = new(false, dists, std)
+        return DLTObsDist(true) 
+    else
+        return DLTObsDist(p.dcache[sp], get(p.cdf), p.reading_std)
     end
 end
-=#
