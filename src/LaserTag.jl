@@ -19,7 +19,10 @@ export
 
     MoveTowards,
     MoveTowardsSampled,
-    InevitableInit,
+    OptimalMLSolver,
+    OptimalML,
+    BestExpectedSolver,
+    BestExpected,
 
     gen_lasertag,
     tikz_pic
