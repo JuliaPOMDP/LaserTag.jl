@@ -67,6 +67,7 @@ include("distance_cache.jl")
     reading_std::Float64        = 2.5
     obstacles::Set{Coord}       = Set{Coord}()
     robot_init::Coord           = Coord(1,1)
+    diag_actions::Bool          = false
     dcache::LTDistanceCache     = LTDistanceCache(floor, obstacles)
     cdf::Nullable{ReadingCDF}   = nothing
 end
@@ -127,6 +128,14 @@ function opaque(f::Floor, obstacles::Set{Coord}, c::Coord)
         return true
     else
         return false
+    end
+end
+
+function add_if_clear(f::Floor, obstacles::Set{Coord}, x::Coord, dx::Coord)
+    if opaque(f, obstacles, x + dx)
+        return x
+    else
+        return x + dx
     end
 end
 

@@ -72,40 +72,41 @@ function transition(p::LaserTagPOMDP, s::LTState, a::Int)
     opp = s.opponent
     rob = s.robot
     f = p.floor
+    obst = p.obstacles
 
     # opponent behavior (see base_tag.cpp line 576)
     # 0.4 chance of moving in x direction
     if opp[1] == rob[1]
-        if inside(f, opp + Coord(1,0))
+        if !opaque(f, obst, opp + Coord(1,0))
             probs[3] += 0.2
         end
-        if inside(f, opp + Coord(-1,0))
+        if !opaque(f, obst, opp + Coord(-1,0))
             probs[4] += 0.2
         end
-    elseif opp[1] > rob[1] && inside(f, opp + Coord(1,0))
+    elseif opp[1] > rob[1] && !opaque(f, obst, opp + Coord(1,0))
         probs[3] += 0.4
-    elseif opp[1] < rob[1] && inside(f, opp + Coord(-1,0))
+    elseif opp[1] < rob[1] && !opaque(f, obst, opp + Coord(-1,0))
         probs[4] += 0.4
     end
 
     # 0.4 chance of moving in y direction
     if opp[2] == rob[2]
-        if inside(f, opp + Coord(0,1))
+        if !opaque(f, obst, opp + Coord(0,1))
             probs[1] += 0.2
         end
-        if inside(f, opp + Coord(0,-1))
+        if !opaque(f, obst, opp + Coord(0,-1))
             probs[2] += 0.2
         end
-    elseif opp[2] > rob[2] && inside(f, opp + Coord(0,1))
+    elseif opp[2] > rob[2] && !opaque(f, obst, opp + Coord(0,1))
         probs[1] += 0.4
-    elseif opp[2] < rob[2] && inside(f, opp + Coord(0,-1))
+    elseif opp[2] < rob[2] && !opaque(f, obst, opp + Coord(0,-1))
         probs[2] += 0.4
     end
 
     # 0.2 + all out of bounds mass chance staying the same
     probs[5] = 1.0 - sum(probs)
 
-    next_rob = add_if_inside(p.floor, rob, ACTION_DIRS[a])
+    next_rob = add_if_clear(f, obst, rob, ACTION_DIRS[a])
 
     return LTTransDist(next_rob, opp, probs)
 end
