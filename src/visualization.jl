@@ -119,3 +119,29 @@ function tikz_pic(v::LaserTagVis)
     tikzDeleteIntermediate(true)
     return TikzPicture(takebuf_string(o), options="scale=1.25")
 end
+
+function Base.show(io::IO, mime::MIME"text/plain", v::LaserTagVis)
+    for y in n_rows(v.p):-1:1
+        for x in 1:n_cols(v.p)
+            printed = false
+            if !isnull(v.s)
+                s = get(v.s)
+                if Coord(x,y) == s.robot
+                    print(io, 'R')
+                    printed = true
+                elseif Coord(x,y) == s.opponent
+                    print(io, 'O')
+                    printed = true
+                end
+            end
+            if !printed
+                if Coord(x,y) in v.p.obstacles
+                    print(io, '#')
+                else
+                    print(io, '.')
+                end
+            end
+        end
+        print(io, '\n')
+    end
+end
