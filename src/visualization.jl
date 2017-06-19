@@ -67,7 +67,7 @@ function show_meas(o::IO, s::LTState, obs::Union{CMeas,DMeas})
 end
 
 function draw_laser(o::IO, start::AbstractVector{Float64}, finish::AbstractVector{Float64})
-    println(o, "\\draw[dashed, red] ($(start[1]), $(start[2])) -- ($(finish[1]), $(finish[2]));")
+    println(o, "\\draw[dashed, red] $(@sprintf("(%0.3f, %0.3f)", start[1], start[2])) -- $(@sprintf("(%0.3f, %0.3f)", finish[1], finish[2]));")
 end
 
 function tikz_pic(v::LaserTagVis)
