@@ -4,7 +4,8 @@ catch ex
     warn("Unable to run `lualatex -v`. Lualatex is required for visualizing LaserTag.")
     if is_linux()
         info("Attempting to install lualatex with apt-get.")
-        cmds = [`sudo apt-get install texlive-latex-base`, `sudo apt-get install texlive-binaries`]
+        # cmds = [`sudo apt-get install texlive-latex-base`, `sudo apt-get install texlive-binaries`]
+        cmds = [`sudo apt-get install texlive-latex-extra`]
         for c in cmds
             info("Running $c")
             run(c)
