@@ -26,7 +26,8 @@ export
 
     gen_lasertag,
     cpp_emu_lasertag,
-    tikz_pic
+    tikz_pic,
+    n_clear_cells
 
 
 typealias Coord SVector{2, Int}
@@ -70,7 +71,7 @@ include("distance_cache.jl")
     robot_init::Coord           = Coord(1,1)
     diag_actions::Bool          = false
     dcache::LTDistanceCache     = LTDistanceCache(floor, obstacles)
-    cdf::Nullable{ReadingCDF}   = nothing
+    cdf::Nullable{ReadingCDF}   = ReadingCDF(floor, reading_std)
 end
 
 n_cols(p::LaserTagPOMDP) = p.floor.n_cols

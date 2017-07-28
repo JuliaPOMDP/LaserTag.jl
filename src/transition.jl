@@ -4,9 +4,6 @@ immutable LTTransDist
     prev_opp::Coord
     probs::SVector{5, Float64} # corresponds to opp moving in the cardinal directions or staying
                      # sum(probs) is always 1!
-
-    # LTTransDist(t::Bool) = new(t)
-    # LTTransDist(rob::Coord, prev_opp::Coord, probs::AbstractVector) = new(false, rob, prev_opp, probs)
 end
 LTTransDist(rob::Coord, prev_opp::Coord, probs::AbstractVector) = LTTransDist(false, rob, prev_opp, probs)
 
@@ -78,13 +75,13 @@ function transition(p::LaserTagPOMDP, s::LTState, a::Int)
     # 0.4 chance of moving in x direction
     if opp[1] == rob[1]
         if !opaque(f, obst, opp + Coord(1,0))
-            probs[3] += 0.2
+            probs[2] += 0.2
         end
         if !opaque(f, obst, opp + Coord(-1,0))
             probs[4] += 0.2
         end
     elseif opp[1] > rob[1] && !opaque(f, obst, opp + Coord(1,0))
-        probs[3] += 0.4
+        probs[2] += 0.4
     elseif opp[1] < rob[1] && !opaque(f, obst, opp + Coord(-1,0))
         probs[4] += 0.4
     end
@@ -95,12 +92,12 @@ function transition(p::LaserTagPOMDP, s::LTState, a::Int)
             probs[1] += 0.2
         end
         if !opaque(f, obst, opp + Coord(0,-1))
-            probs[2] += 0.2
+            probs[3] += 0.2
         end
     elseif opp[2] > rob[2] && !opaque(f, obst, opp + Coord(0,1))
         probs[1] += 0.4
     elseif opp[2] < rob[2] && !opaque(f, obst, opp + Coord(0,-1))
-        probs[2] += 0.4
+        probs[3] += 0.4
     end
 
     # 0.2 + all out of bounds mass chance staying the same

@@ -51,8 +51,8 @@ function rand(rng::AbstractRNG, d::DLTObsDist)
         return D_SAME_LOC
     end
     meas = MVector{8, Int}()
-    meas[1:4] = max(0, round(Int, d.distances.cardinal + d.std*randn(rng, 4)))
-    meas[5:8] = max(0, round(Int, d.distances.diagonal*sqrt(2) + d.std*randn(rng, 4)))
+    meas[1:4] = max(0, floor(Int, d.distances.cardinal + d.std*randn(rng, 4)))
+    meas[5:8] = max(0, floor(Int, d.distances.diagonal*sqrt(2) + d.std*randn(rng, 4)))
     return meas
 end
 

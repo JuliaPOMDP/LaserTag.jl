@@ -1,0 +1,304 @@
+zach@Theresa:~/Devel/despot/examples/cpp_models/tag$ ./lasertag -r 7
+Model = N6despot8LaserTagE
+Random root seed = 7
+Search depth = 90
+Discount = 0.95
+Simulation steps = 90
+Number of scenarios = 500
+Search time per step = 1
+Regularization constant = 0.01
+Lower bound = DEFAULT
+Upper bound = DEFAULT
+Policy simulation depth = 90
+Target gap ratio = 0.95
+
+####################################### Round 0 #######################################
+Initial state: 
+R.#........
+...........
+...........
+.....#...#.
+.........#.
+.#...#.....
+#...#....O.
+
+-----------------------------------Round 0 Step 0-----------------------------------
+- Action = South
+- State:
+..#........
+R..........
+...........
+.....#...#.
+.........#.
+.#...#.....
+#...#.....O
+- Observation = 4 9 0 0 6 2 0 0 
+- ObsProb = 0.00258604
+- Reward = -1
+- Current rewards:
+  discounted / undiscounted = -1 / -1
+
+-----------------------------------Round 0 Step 1-----------------------------------
+- Action = East
+- State:
+..#........
+.R.........
+...........
+.....#...#.
+.........#.
+.#...#.....
+#...#.....O
+- Observation = 1 8 0 0 2 0 1 1 
+- ObsProb = 0.000232729
+- Reward = -1
+- Current rewards:
+  discounted / undiscounted = -1.95 / -2
+
+-----------------------------------Round 0 Step 2-----------------------------------
+- Action = East
+- State:
+..#........
+..R........
+...........
+.....#...#.
+.........#.
+.#...#.....
+#...#.....O
+- Observation = 5 8 0 0 7 1 1 0 
+- ObsProb = 0.000177984
+- Reward = -1
+- Current rewards:
+  discounted / undiscounted = -2.8525 / -3
+
+-----------------------------------Round 0 Step 3-----------------------------------
+- Action = East
+- State:
+..#........
+...R.......
+...........
+.....#...#.
+.........#.
+.#...#.....
+#...#.....O
+- Observation = 4 7 0 0 0 1 0 3 
+- ObsProb = 0.000319759
+- Reward = -1
+- Current rewards:
+  discounted / undiscounted = -3.70987 / -4
+
+-----------------------------------Round 0 Step 4-----------------------------------
+- Action = East
+- State:
+..#........
+....R......
+...........
+.....#...#.
+.........#.
+.#...#.....
+#...#.....O
+- Observation = 2 3 0 2 4 0 0 5 
+- ObsProb = 1.58596e-05
+- Reward = -1
+- Current rewards:
+  discounted / undiscounted = -4.52438 / -5
+
+-----------------------------------Round 0 Step 5-----------------------------------
+- Action = East
+- State:
+..#........
+.....R.....
+...........
+.....#...#.
+.........#.
+.#...#.....
+#...#.....O
+- Observation = 0 3 1 3 2 0 2 5 
+- ObsProb = 1.2223e-05
+- Reward = -1
+- Current rewards:
+  discounted / undiscounted = -5.29816 / -6
+
+-----------------------------------Round 0 Step 6-----------------------------------
+- Action = East
+- State:
+..#........
+......R....
+...........
+.....#...#.
+.........#.
+.#...#.....
+#...#.....O
+- Observation = 4 4 0 6 4 2 0 6 
+- ObsProb = 3.82869e-05
+- Reward = -1
+- Current rewards:
+  discounted / undiscounted = -6.03325 / -7
+
+-----------------------------------Round 0 Step 7-----------------------------------
+- Action = South
+- State:
+..#........
+...........
+......R....
+.....#...#.
+.........#.
+.#...#.....
+#...#.....O
+- Observation = 4 2 0 6 4 4 2 0 
+- ObsProb = 3.78645e-05
+- Reward = -1
+- Current rewards:
+  discounted / undiscounted = -6.73159 / -8
+
+-----------------------------------Round 0 Step 8-----------------------------------
+- Action = South
+- State:
+..#........
+...........
+...........
+.....#R..#.
+.........#.
+.#...#.....
+#...#.....O
+- Observation = 2 2 3 0 3 4 3 4 
+- ObsProb = 0.000100641
+- Reward = -1
+- Current rewards:
+  discounted / undiscounted = -7.39501 / -9
+
+-----------------------------------Round 0 Step 9-----------------------------------
+- Action = South
+- State:
+..#........
+...........
+...........
+.....#...#.
+......R..#.
+.#...#.....
+#...#.....O
+- Observation = 1 2 4 4 2 6 0 0 
+- ObsProb = 0.000288588
+- Reward = -1
+- Current rewards:
+  discounted / undiscounted = -8.02526 / -10
+
+-----------------------------------Round 0 Step 10-----------------------------------
+- Action = East
+- State:
+..#........
+...........
+...........
+.....#...#.
+.......R.#.
+.#...#.....
+#...#.....O
+- Observation = 1 1 2 5 2 4 6 1 
+- ObsProb = 1.19013e-05
+- Reward = -1
+- Current rewards:
+  discounted / undiscounted = -8.624 / -11
+
+-----------------------------------Round 0 Step 11-----------------------------------
+- Action = South
+- State:
+..#........
+...........
+...........
+.....#...#.
+.........#.
+.#...#.R...
+#...#.....O
+- Observation = 1 2 4 0 0 0 1 2 
+- ObsProb = 0.00023327
+- Reward = -1
+- Current rewards:
+  discounted / undiscounted = -9.1928 / -12
+
+-----------------------------------Round 0 Step 12-----------------------------------
+- Action = East
+- State:
+..#........
+...........
+...........
+.....#...#.
+.........#.
+.#...#..R..
+#...#.....O
+- Observation = 0 2 4 0 1 0 6 2 
+- ObsProb = 0.000348013
+- Reward = -1
+- Current rewards:
+  discounted / undiscounted = -9.73316 / -13
+
+-----------------------------------Round 0 Step 13-----------------------------------
+- Action = East
+- State:
+..#........
+...........
+...........
+.....#...#.
+.........#.
+.#...#...R.
+#...#.....O
+- Observation = 0 0 0 1 0 1 4 0 
+- ObsProb = 0.000925637
+- Reward = -1
+- Current rewards:
+  discounted / undiscounted = -10.2465 / -14
+
+-----------------------------------Round 0 Step 14-----------------------------------
+- Action = South
+- State:
+..#........
+...........
+...........
+.....#...#.
+.........#.
+.#...#.....
+#...#....RO
+- Observation = 0 0 1 2 1 0 9 0 
+- ObsProb = 0.000897613
+- Reward = -1
+- Current rewards:
+  discounted / undiscounted = -10.7342 / -15
+
+-----------------------------------Round 0 Step 15-----------------------------------
+- Action = East
+- State:
+..#........
+...........
+...........
+.....#...#.
+.........#.
+.#...#.....
+#...#.....Q
+- Observation = 101 101 101 101 101 101 101 101 
+- ObsProb = 1
+- Reward = -1
+- Current rewards:
+  discounted / undiscounted = -11.1975 / -16
+
+-----------------------------------Round 0 Step 16-----------------------------------
+- Action = Tag
+- State:
+..#........
+...........
+...........
+.....#...#.
+.........#.
+.#...#.....
+#...#.....Q
+- Observation = 101 101 101 101 101 101 101 101 
+- ObsProb = 1
+- Reward = 10
+- Current rewards:
+  discounted / undiscounted = -6.7962 / -6
+
+Simulation terminated in 17 steps
+Total discounted reward = -6.7962
+Total undiscounted reward = -6
+
+Completed 1 run(s).
+Average total discounted reward (stderr) = -6.7962 (0)
+Average total undiscounted reward (stderr) = -6 (0)
+Total time: Real / CPU = 14.1922 / 14.1732s

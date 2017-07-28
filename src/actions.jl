@@ -2,8 +2,8 @@ n_actions(p::LaserTagPOMDP) = p.diag_actions ? 9 : 5
 actions(p::LaserTagPOMDP) = 1:n_actions(p)
 
 const ACTION_NAMES = SVector("north",
-                             "south",
                              "east",
+                             "south",
                              "west",
                              "tag",
                              "northeast",
@@ -14,8 +14,8 @@ const ACTION_NAMES = SVector("north",
 const TAG_ACTION = 5
 
 const ACTION_DIRS = SVector(Coord(0,1),
-                            Coord(0,-1),
                             Coord(1,0),
+                            Coord(0,-1),
                             Coord(-1,0),
                             Coord(0,0),
                             Coord(1,1),
@@ -24,8 +24,8 @@ const ACTION_DIRS = SVector(Coord(0,1),
                             Coord(-1,1))
 
 const CARDINALS = SVector(Coord(0,1),
-                            Coord(0,-1),
                             Coord(1,0),
+                            Coord(0,-1),
                             Coord(-1,0))
 
 const DIAGONALS = SVector(Coord(1,1),
