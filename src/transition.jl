@@ -33,10 +33,10 @@ function pdf(d::LTTransDist, s::LTState)::Float64
             if dir[2] == 1
                 return d.probs[1]
             else
-                return d.probs[2]
+                return d.probs[3]
             end
         elseif dir[1] == 1
-            return d.probs[3]
+            return d.probs[2]
         else
             return d.probs[4]
         end
