@@ -29,7 +29,7 @@ type LTDistanceCache
 end
 
 function LTDistanceCache(f::Floor, obstacles::Set{Coord})
-    dists = Array(ClearDistances, n_pos(f)^2)
+    dists = Array{ClearDistances}(n_pos(f)^2)
     visited = falses(n_pos(f)^2)
     for i in 1:f.n_cols, j in 1:f.n_rows, k in 1:f.n_cols, l in 1:f.n_rows
         s = LTState(Coord(i,j), Coord(k,l), false)
@@ -62,8 +62,8 @@ function ReadingCDF(f::Floor,
                     std::Float64,
                     maxread::Int=ceil(Int, max_diag(f)+4*std))
     maxclear = max(f.n_rows, f.n_cols) - 1
-    cardcdf = Array(Float64, maxclear + 1, maxread + 1)
-    diagcdf = Array(Float64, maxclear + 1, maxread + 1)
+    cardcdf = Array{Float64}(maxclear + 1, maxread + 1)
+    diagcdf = Array{Float64}(maxclear + 1, maxread + 1)
 
     for c in 0:maxclear
         for r in 0:maxread

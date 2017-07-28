@@ -23,7 +23,7 @@ end
 function pdf(d::LTTransDist, s::LTState)::Float64
     if d.terminal 
         return s.terminal ? 1.0 : 0.0
-    elseif s.terminal || s.robot != d.rob || sumabs(s.opponent-d.prev_opp) > 1
+    elseif s.terminal || s.robot != d.rob || sum(abs, s.opponent-d.prev_opp) > 1
         return 0.0
     elseif s.opponent == d.prev_opp
         return d.probs[5]

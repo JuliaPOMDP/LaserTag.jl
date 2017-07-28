@@ -117,7 +117,7 @@ function tikz_pic(v::LaserTagVis)
     println(o, "\\end{scope}")
 
     tikzDeleteIntermediate(true)
-    return TikzPicture(takebuf_string(o), options="scale=1.25")
+    return TikzPicture(String(take!(o)), options="scale=1.25")
 end
 
 function Base.show(io::IO, mime::MIME"text/plain", v::LaserTagVis)
