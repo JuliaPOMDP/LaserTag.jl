@@ -24,6 +24,8 @@ export
     BestExpectedSolver,
     BestExpected,
 
+    DESPOTEmu,
+
     gen_lasertag,
     cpp_emu_lasertag,
     tikz_pic,

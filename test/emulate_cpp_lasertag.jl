@@ -3,45 +3,45 @@ using LaserTag
 using POMDPs
 using Base.Test
 
-model = LaserTagPOMDP{DMeas}(
+model = LaserTagPOMDP{DESPOTEmu, DMeas}(
     obstacles = Set{Coord}(
         Coord(xy...) for xy in [
-            (1,1),
-            (5,1),
-            (2,2),
-            (6,2),
-            (10,3),
+            (3,1),
             (6,4),
             (10,4),
-            (3,7)
+            (10,5),
+            (2,6),
+            (6,6),
+            (1,7),
+            (5,7)
         ]
     )                     
 )
 
-is = LTState(Coord(1,7), Coord(10,1), false)
+is = LTState(Coord(1,1), Coord(10,7), false)
 
 show(STDOUT, MIME("text/plain"), LaserTagVis(model, s=is))
 
 a = Dict{Symbol, Int}(:North=>1, :South=>2, :East=>3, :West=>4, :Tag=>5)
 
 aspor = [
-    (a[:South], LTState([1,6], [11,1], false), DMeas(4, 9, 0, 0, 6, 2, 0, 0), -1.0),
-    (a[:East], LTState([2,6], [11,1], false), DMeas(1, 8, 0, 0, 2, 0, 1, 1), -1.0),
-    (a[:East], LTState([3,6], [11,1], false), DMeas(5, 8, 0, 0, 7, 1, 1, 0), -1.0),
-    (a[:East], LTState([4,6], [11,1], false), DMeas(4, 7, 0, 0, 0, 1, 0, 3), -1.0),
-    (a[:East], LTState([5,6], [11,1], false), DMeas(2, 3, 0, 2, 4, 0, 0, 5), -1.0),
-    (a[:East], LTState([6,6], [11,1], false), DMeas(0, 3, 1, 3, 2, 0, 2, 5), -1.0),
-    (a[:East], LTState([7,6], [11,1], false), DMeas(4, 4, 0, 6, 4, 2, 0, 6), -1.0),
-    (a[:South], LTState([7,5], [11,1], false), DMeas(4, 2, 0, 6, 4, 4, 2, 0), -1.0),
-    (a[:South], LTState([7,4], [11,1], false), DMeas(2, 2, 3, 0, 3, 4, 3, 4), -1.0),
-    (a[:South], LTState([7,3], [11,1], false), DMeas(1, 2, 4, 4, 2, 6, 0, 0), -1.0),
-    (a[:East], LTState([8,3], [11,1], false), DMeas(1, 1, 2, 5, 2, 4, 6, 1), -1.0),
-    (a[:South], LTState([8,2], [11,1], false), DMeas(1, 2, 4, 0, 0, 0, 1, 2), -1.0),
-    (a[:East], LTState([9,2], [11,1], false), DMeas(0, 2, 4, 0, 1, 0, 6, 2), -1.0),
-    (a[:East], LTState([10,2], [11,1], false), DMeas(0, 0, 0, 1, 0, 1, 4, 0), -1.0),
-    (a[:South], LTState([10,1], [11,1], false), DMeas(0, 0, 1, 2, 1, 0, 9, 0), -1.0),
-    (a[:East], LTState([11,1], [11,1], false), LaserTag.D_SAME_LOC, -1.0),
-    (a[:Tag], LTState([11,1], [11,1], false), LaserTag.D_SAME_LOC, 10.0),
+    (a[:South], LTState([1,2], [11,7], false), DMeas(4, 9, 0, 0, 6, 2, 0, 0), -1.0),
+    (a[:East], LTState([2,2], [11,7], false), DMeas(1, 8, 0, 0, 2, 0, 1, 1), -1.0),
+    (a[:East], LTState([3,2], [11,7], false), DMeas(5, 8, 0, 0, 7, 1, 1, 0), -1.0),
+    (a[:East], LTState([4,2], [11,7], false), DMeas(4, 7, 0, 0, 0, 1, 0, 3), -1.0),
+    (a[:East], LTState([5,2], [11,7], false), DMeas(2, 3, 0, 2, 4, 0, 0, 5), -1.0),
+    (a[:East], LTState([6,2], [11,7], false), DMeas(0, 3, 1, 3, 2, 0, 2, 5), -1.0),
+    (a[:East], LTState([7,2], [11,7], false), DMeas(4, 4, 0, 6, 4, 2, 0, 6), -1.0),
+    (a[:South], LTState([7,3], [11,7], false), DMeas(4, 2, 0, 6, 4, 4, 2, 0), -1.0),
+    (a[:South], LTState([7,4], [11,7], false), DMeas(2, 2, 3, 0, 3, 4, 3, 4), -1.0),
+    (a[:South], LTState([7,5], [11,7], false), DMeas(1, 2, 4, 4, 2, 6, 0, 0), -1.0),
+    (a[:East], LTState([8,5], [11,7], false), DMeas(1, 1, 2, 5, 2, 4, 6, 1), -1.0),
+    (a[:South], LTState([8,6], [11,7], false), DMeas(1, 2, 4, 0, 0, 0, 1, 2), -1.0),
+    (a[:East], LTState([9,6], [11,7], false), DMeas(0, 2, 4, 0, 1, 0, 6, 2), -1.0),
+    (a[:East], LTState([10,6], [11,7], false), DMeas(0, 0, 0, 1, 0, 1, 4, 0), -1.0),
+    (a[:South], LTState([10,7], [11,7], false), DMeas(0, 0, 1, 2, 1, 0, 9, 0), -1.0),
+    (a[:East], LTState([11,7], [11,7], false), LaserTag.D_SAME_LOC, -1.0),
+    (a[:Tag], LTState([11,7], [11,7], false), LaserTag.D_SAME_LOC, 10.0),
 ]
 
 oprobs = [
