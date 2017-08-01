@@ -60,6 +60,7 @@ end
 # reading CDF
 function ReadingCDF(f::Floor,
                     std::Float64,
+                    shortonly::Bool=false,
                     maxread::Int=ceil(Int, max_diag(f)+4*std))
     maxclear = max(f.n_rows, f.n_cols) - 1
     cardcdf = Array{Float64}(maxclear + 1, maxread + 1)
@@ -75,6 +76,11 @@ function ReadingCDF(f::Floor,
         for r in 0:maxread
             diagcdf[c+1, r+1] = (1+erf((r+1.0-sqrt(2)*c)/(std*sqrt(2))))/2
         end
+    end
+
+    for c in 0:maxclear
+        @assert abs(sum(diff(cardcdf[c, :])) - 1.0) < 1e-5
+        @assert abs(sum(diff(diagcdf[c, :])) - 1.0) < 1e-5
     end
 
     return ReadingCDF(cardcdf, diagcdf)

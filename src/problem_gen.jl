@@ -7,6 +7,7 @@ function cpp_emu_lasertag(r::Int; kwargs...)
     return gen_lasertag(7, 11; obstacles=obstacles, kwargs...)
 end
 
+#=
 function gen_lasertag(n_rows::Int,
                       n_cols::Int,
                       n_obstacles::Int,
@@ -20,6 +21,24 @@ function gen_lasertag(n_rows::Int,
                         discrete=discrete,
                         reading_std=reading_std,
                         rng=rng,
+                        kwargs...
+                       )
+end
+=#
+
+function gen_lasertag(n_rows::Int,
+                      n_cols::Int,
+                      n_obstacles::Int,
+                      obs_model::ObsModel=DESPOTEmu(Floor(n_rows, n_cols), 2.5);
+                      rng=Base.GLOBAL_RNG,
+                      kwargs...
+                     )
+    
+    return gen_lasertag(n_rows,
+                        n_cols,
+                        obstacles=gen_obstacles(n_rows, n_cols, n_obstacles, rng),
+                        obs_model=obs_model,
+                        rng=rng;
                         kwargs...
                        )
 end
@@ -44,25 +63,16 @@ function gen_lasertag(n_rows::Int=7,
                       n_cols::Int=11;
                       rng=Base.GLOBAL_RNG,
                       obstacles=gen_obstacles(n_rows, n_cols, 8, rng),
-                      discrete=false,
-                      reading_std=2.5,
+                      obs_model::ObsModel=DESPOTEmu(Floor(n_rows, n_cols), 2.5),
                       kwargs...)
 
     f = Floor(n_rows, n_cols)
     r = Coord(rand(rng, 1:f.n_cols), rand(rng, 1:f.n_rows))
-    if discrete
-        return LaserTagPOMDP{DMeas}(;floor=f,
-                                     obstacles=obstacles,
-                                     robot_init=r, 
-                                     reading_std=reading_std,
-                                     cdf=ReadingCDF(f, reading_std),
-                                     kwargs...)
-    else
-        return LaserTagPOMDP{CMeas}(;floor=f,
-                                     obstacles=obstacles,
-                                     robot_init=r,
-                                     reading_std=reading_std,
-                                     kwargs...)
-    end
+    M = typeof(obs_model)
+    O = obs_type(M)
+    return LaserTagPOMDP{M, O}(;floor=f,
+                                obstacles=obstacles,
+                                robot_init=r, 
+                                obs_model=obs_model,
+                                kwargs...)
 end
-

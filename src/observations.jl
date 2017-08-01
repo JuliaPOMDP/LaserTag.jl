@@ -1,3 +1,8 @@
+#=
+THIS FILE IS OBSOLETE
+=#
+
+#=
 immutable CLTObsDist
     same::Bool
     distances::ClearDistances
@@ -81,3 +86,4 @@ function observation(p::LaserTagPOMDP{DMeas}, sp::LTState)
         return DLTObsDist(p.dcache[sp], get(p.cdf), p.reading_std)
     end
 end
+=#

@@ -17,7 +17,7 @@ hist = simulate(sim, p, pol, filter)
 tikz_pic(LaserTagVis(p))
 
 # discrete
-p = gen_lasertag(discrete=true)
+p = gen_lasertag()
 
 # check observation model consistency
 rng = MersenneTwister(12)
@@ -39,10 +39,10 @@ for dir in 1:8
     for (r, count) in counts
         total += count
         if r == 0
-            prob = LaserTag.cdf(od.cdf, dir, n_clear_cells(od.distances, dir), 0)
+            prob = LaserTag.cdf(od.model.cdf, dir, n_clear_cells(od.distances, dir), 0)
         else
-            prob = (LaserTag.cdf(od.cdf, dir, n_clear_cells(od.distances, dir), r) - 
-                 LaserTag.cdf(od.cdf, dir, n_clear_cells(od.distances, dir), r-1))
+            prob = (LaserTag.cdf(od.model.cdf, dir, n_clear_cells(od.distances, dir), r) - 
+                 LaserTag.cdf(od.model.cdf, dir, n_clear_cells(od.distances, dir), r-1))
         end
         try
             @test isapprox(prob*N, count, atol=10, rtol=0.1)

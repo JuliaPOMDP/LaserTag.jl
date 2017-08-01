@@ -30,9 +30,9 @@ export
     n_clear_cells
 
 
-typealias Coord SVector{2, Int}
-typealias CMeas MVector{8, Float64}
-typealias DMeas MVector{8, Int}
+const Coord = SVector{2, Int}
+const CMeas = MVector{8, Float64}
+const DMeas = MVector{8, Int}
 
 const C_SAME_LOC = fill!(MVector{8, Float64}(), -1.0)
 const D_SAME_LOC = fill!(MVector{8, Int64}(), -1)
@@ -59,19 +59,22 @@ function add_if_inside(f::Floor, x::Coord, dx::Coord)
     end
 end
 
+abstract type ObsModel end
+
+obs_type(om::ObsModel) = obs_type(typeof(om))
+
 include("distance_cache.jl")
 
-@with_kw immutable LaserTagPOMDP{M<:Union{CMeas, DMeas}} <: POMDP{LTState, Int, M}
+@with_kw immutable LaserTagPOMDP{M<:ObsModel, O<:Union{CMeas, DMeas}} <: POMDP{LTState, Int, O}
     tag_reward::Float64         = 10.0
     step_cost::Float64          = 1.0
     discount::Float64           = 0.95
     floor::Floor                = Floor(7, 11)
-    reading_std::Float64        = 2.5
     obstacles::Set{Coord}       = Set{Coord}()
     robot_init::Coord           = Coord(1,1)
     diag_actions::Bool          = false
     dcache::LTDistanceCache     = LTDistanceCache(floor, obstacles)
-    cdf::Nullable{ReadingCDF}   = ReadingCDF(floor, reading_std)
+    obs_model::M                = DESPOTEmu(floor, 2.5)
 end
 
 n_cols(p::LaserTagPOMDP) = p.floor.n_cols
@@ -112,7 +115,7 @@ find_distances(p::LaserTagPOMDP, s::LTState) = find_distances(p.floor, p.obstacl
 include("states.jl")
 include("actions.jl")
 include("transition.jl")
-include("observations.jl")
+include("obs_models.jl")
 include("initial.jl")
 
 function reward(p::LaserTagPOMDP, s::LTState, a::Int, sp::LTState)
