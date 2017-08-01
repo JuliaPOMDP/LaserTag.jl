@@ -68,3 +68,5 @@ tikz_pic(LaserTagVis(p))
 @inferred generate_sor(p, initial_state(p, MersenneTwister(4)), 1, MersenneTwister(4))
 
 show(STDOUT, MIME("text/plain"), LaserTagVis(cpp_emu_lasertag(4)))
+
+include("emulate_cpp_lasertag.jl")

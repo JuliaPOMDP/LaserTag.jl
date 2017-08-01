@@ -22,15 +22,17 @@ function DESPOTEmu(f::Floor, std::Float64, maxread::Int=ceil(Int, max_diag(f)))
     maxclear = max(f.n_rows, f.n_cols) - 1
     cardcdf = Array{Float64}(maxclear + 1, maxread + 1)
 
-    for c in 0:maxclear
+    for dist in 1:maxclear+1 # "dist = LaserRange" from cpp
         cdf = 0.0
-        for r in 0:maxread
-            if r <= c
-                lower = r == 0.0 ? -Inf : r-1.0
-                cdf += 2*(gausscdf(c, std, r) - gausscdf(c, std, lower))
-                cardcdf[c+1, r+1] = cdf
+        for reading in 0:maxread
+            if reading < dist
+                min_noise = reading - dist
+                max_noise = min(dist, reading + 1) - dist
+                cdf += 2*(gausscdf(0, std, max_noise)
+                          - (reading > 0 ? gausscdf(0, std, min_noise) : 0.0))
+                cardcdf[dist, reading+1] = cdf
             else
-                cardcdf[c+1, r+1] = cdf
+                cardcdf[dist, reading+1] = cdf
             end
         end
     end
@@ -39,14 +41,17 @@ function DESPOTEmu(f::Floor, std::Float64, maxread::Int=ceil(Int, max_diag(f)))
     diagcdf = Array{Float64}(maxclear + 1, maxread + 1)
 
     for c in 0:maxclear
+        dist = sqrt(2)*(c+1)
         cdf = 0.0
-        for r in 0:maxread
-            if r <= sqrt(2)*c+1.0
-                lower = r == 0.0 ? -Inf : r-1.0
-                cdf += 2*(gausscdf(sqrt(2)*c, std, min(r, sqrt(2)*c)) - gausscdf(sqrt(2)*c, std, lower))
-                diagcdf[c+1, r+1] = cdf
+        for reading in 0:maxread
+            if reading < dist
+                min_noise = reading - dist
+                max_noise = min(dist, reading + 1) - dist
+                cdf += 2*(gausscdf(0, std, max_noise)
+                          - (reading > 0 ? gausscdf(0, std, min_noise) : 0.0))
+                diagcdf[c+1, reading+1] = cdf
             else
-                diagcdf[c+1, r+1] = cdf
+                diagcdf[c+1, reading+1] = cdf
             end
         end
     end
@@ -64,8 +69,8 @@ function rand(rng::AbstractRNG, d::LTObsDist{DESPOTEmu})
         return D_SAME_LOC
     end
     meas = MVector{8, Int}()
-    meas[1:4] = max.(0, ceil.(Int, d.distances.cardinal - abs.(d.model.std*randn(rng, 4))))
-    meas[5:8] = max.(0, ceil.(Int, d.distances.diagonal*sqrt(2) - abs.(d.model.std*randn(rng, 4))))
+    meas[1:4] = max.(0, floor.(Int, (d.distances.cardinal+1) - abs.(d.model.std*randn(rng, 4))))
+    meas[5:8] = max.(0, floor.(Int, (d.distances.diagonal+1)*sqrt(2) - abs.(d.model.std*randn(rng, 4))))
     return meas
 end
 

@@ -41,7 +41,7 @@ aspor = [
     (a[:East], LTState([10,6], [11,7], false), DMeas(0, 0, 0, 1, 0, 1, 4, 0), -1.0),
     (a[:South], LTState([10,7], [11,7], false), DMeas(0, 0, 1, 2, 1, 0, 9, 0), -1.0),
     (a[:East], LTState([11,7], [11,7], false), LaserTag.D_SAME_LOC, -1.0),
-    (a[:Tag], LTState([11,7], [11,7], false), LaserTag.D_SAME_LOC, 10.0),
+    (a[:Tag], LTState([11,7], [11,7], true), LaserTag.D_SAME_LOC, 10.0),
 ]
 
 oprobs = [
@@ -72,13 +72,11 @@ for i in 1:length(aspor)
         s = aspor[i-1][2]
     end
     od = observation(model, s, a, sp)
-    @show o
-    @show model.dcache[sp]
-    @show oprobs[i]
-    @show pdf(od, o)
     @test isapprox(pdf(od, o), oprobs[i], rtol=0.001)
     @test isapprox(reward(model, s, a, sp), r, atol=0.0001)
     @test !isterminal(model, s)
 end
 
 @test isterminal(model, aspor[end][2])
+
+println("Matches CPP!")
