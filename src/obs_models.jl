@@ -69,8 +69,12 @@ function rand(rng::AbstractRNG, d::LTObsDist{DESPOTEmu})
         return D_SAME_LOC
     end
     meas = MVector{8, Int}()
-    meas[1:4] = max.(0, floor.(Int, (d.distances.cardinal+1) - abs.(d.model.std*randn(rng, 4))))
-    meas[5:8] = max.(0, floor.(Int, (d.distances.diagonal+1)*sqrt(2) - abs.(d.model.std*randn(rng, 4))))
+    for i in 1:4
+        meas[i] = max(0, floor(Int, (d.distances.cardinal[i]+1) - abs(d.model.std*randn(rng))))
+    end
+    for i in 5:8
+        meas[i] = max(0, floor(Int, (d.distances.diagonal[i-4]+1)*sqrt(2) - abs(d.model.std*randn(rng))))
+    end
     return meas
 end
 

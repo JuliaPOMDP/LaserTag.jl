@@ -3,7 +3,7 @@ immutable LTInitialBelief
     floor::Floor
 end
 
-Base.eltype(::Type{LTInitialBelief}) = LTState
+sampletype(::Type{LTInitialBelief}) = LTState
 iterator(b::LTInitialBelief) = collect(LTState(b.robot_init, Coord(x,y), false) for x in 1:b.floor.n_cols, y in 1:b.floor.n_rows)
 
 function rand(rng::AbstractRNG, b::LTInitialBelief)
