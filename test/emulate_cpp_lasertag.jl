@@ -64,6 +64,9 @@ oprobs = [
     1
 ]
 
+discounted_rsum = 0.0
+disc = 1.0
+@show discount(model)
 for i in 1:length(aspor)
     a, sp, o, r = aspor[i]
     if i == 1
@@ -75,8 +78,12 @@ for i in 1:length(aspor)
     @test isapprox(pdf(od, o), oprobs[i], rtol=0.001)
     @test isapprox(reward(model, s, a, sp), r, atol=0.0001)
     @test !isterminal(model, s)
+    @show discounted_rsum += disc*r
+    disc*=discount(model)
 end
+@show discounted_rsum
 
 @test isterminal(model, aspor[end][2])
+@test isapprox(discounted_rsum, -6.7962, atol=0.0001)
 
 println("Matches CPP!")
