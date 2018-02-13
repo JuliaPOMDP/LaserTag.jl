@@ -8,6 +8,7 @@ using AutoHashEquals
 using Parameters
 using StatsBase
 using Distributions
+using IterTools
 
 importall POMDPs
 
@@ -75,7 +76,7 @@ include("distance_cache.jl")
     discount::Float64           = 0.95
     floor::Floor                = Floor(7, 11)
     obstacles::Set{Coord}       = Set{Coord}()
-    robot_init::Coord           = Coord(1,1)
+    robot_init::Nullable{Coord} = Nullable{Coord}()
     diag_actions::Bool          = false
     dcache::LTDistanceCache     = LTDistanceCache(floor, obstacles)
     obs_model::M                = DESPOTEmu(floor, 2.5)

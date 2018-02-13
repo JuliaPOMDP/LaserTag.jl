@@ -1,21 +1,46 @@
 immutable LTInitialBelief
-    robot_init::Coord
+    robot_init::Nullable{Coord}
     floor::Floor
 end
 
 sampletype(::Type{LTInitialBelief}) = LTState
-iterator(b::LTInitialBelief) = collect(LTState(b.robot_init, Coord(x,y), false) for x in 1:b.floor.n_cols, y in 1:b.floor.n_rows)
+function iterator(b::LTInitialBelief)
+    states = LTState[]
+    for (x,y) in product(1:b.floor.n_cols, 1:b.floor.n_rows)
+        if isnull(b.robot_init)
+            for (rx, ry) in product(1:b.floor.n_cols, 1:b.floor.n_rows)
+                push!(states, LTState(Coord(rx,ry), Coord(x,y), false))
+            end
+        else
+            push!(states, LTState(get(b.robot_init), Coord(x,y), false))
+        end
+    end
+    return states
+end
 
 function rand(rng::AbstractRNG, b::LTInitialBelief)
-    opp = SVector(rand(rng, 1:b.floor.n_cols), rand(rng, 1:b.floor.n_rows))
-    return LTState(b.robot_init, opp, false)
+    opp = Coord(rand(rng, 1:b.floor.n_cols), rand(rng, 1:b.floor.n_rows))
+    if isnull(b.robot_init)
+        rob = Coord(rand(rng, 1:b.floor.n_cols), rand(rng, 1:b.floor.n_rows))
+    else
+        rob = get(b.robot_init)
+    end
+    return LTState(rob, opp, false)
 end
 
 function pdf(b::LTInitialBelief, s::LTState)
-    if !s.terminal && s.robot == b.robot_init
-        return 1/n_pos(b.floor)
-    else
+    if s.terminal
         return 0.0
+    else
+        if isnull(b.robot_init)
+            return (1/n_pos(b.floor))^2
+        else
+            if s.robot == get(b.robot_init)
+                return 1/n_pos(b.floor)
+            else
+                return 0.0
+            end
+        end
     end
 end
 
