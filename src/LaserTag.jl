@@ -10,7 +10,7 @@ using StatsBase
 using Distributions
 using IterTools
 
-importall POMDPs
+using POMDPs
 
 export
     LaserTagPOMDP,
@@ -42,13 +42,13 @@ const DMeas = MVector{8, Int}
 const C_SAME_LOC = fill!(MVector{8, Float64}(), -1.0)
 const D_SAME_LOC = fill!(MVector{8, Int64}(), -1)
 
-@auto_hash_equals immutable LTState # XXX auto_hash_equals isn't correct for terminal
+@auto_hash_equals struct LTState # XXX auto_hash_equals isn't correct for terminal
     robot::Coord
     opponent::Coord
     terminal::Bool
 end
 
-immutable Floor
+struct Floor
     n_rows::Int
     n_cols::Int
 end
