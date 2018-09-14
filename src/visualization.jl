@@ -84,24 +84,24 @@ function tikz_pic(v::LaserTagVis)
         fill_square(o, c[1], c[2], "gray")
     end
 
-    if !isnull(v.b)
+    if v.b !== nothing
         show_belief(o, get(v.b))
     end
 
-    if !isnull(v.s)
+    if v.s !== nothing
         s = get(v.s)
         opp = s.opponent
         rob = s.robot
         fill_square(o, opp[1], opp[2], "orange")
         fill_square(o, rob[1], rob[2], "green")
-        if !isnull(v.o)
+        if v.o !== nothing
             show_meas(o, s, get(v.o))
         end
-        if !isnull(v.a)
+        if v.a !== nothing
             aname = ACTION_NAMES[get(v.a)]
             println(o, "\\node[above right] at ($((rob[1]-1) * sqsize), $((rob[2]-1) * sqsize)) {$aname};")
         end
-        if !isnull(v.r)
+        if v.r !== nothing
             rtext = @sprintf("%0.2f", get(v.r))
             println(o, "\\node[below right] at ($((rob[1]-1) * sqsize), $((rob[2]-1) * sqsize)) {$rtext};")
         end
@@ -124,7 +124,7 @@ function Base.show(io::IO, mime::MIME"text/plain", v::LaserTagVis)
     for y in n_rows(v.p):-1:1
         for x in 1:n_cols(v.p)
             printed = false
-            if !isnull(v.s)
+            if v.s !== nothing
                 s = get(v.s)
                 if Coord(x,y) == s.robot
                     print(io, 'R')

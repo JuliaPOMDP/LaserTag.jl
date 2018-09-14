@@ -1,5 +1,5 @@
-n_actions(p::LaserTagPOMDP) = p.diag_actions ? 9 : 5
-actions(p::LaserTagPOMDP) = 1:n_actions(p)
+POMDPs.n_actions(p::LaserTagPOMDP) = p.diag_actions ? 9 : 5
+POMDPs.actions(p::LaserTagPOMDP) = 1:n_actions(p)
 
 const ACTION_NAMES = SVector("north",
                              "east",

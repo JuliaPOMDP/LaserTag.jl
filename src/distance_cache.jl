@@ -33,7 +33,7 @@ function LTDistanceCache(f::Floor, obstacles::Set{Coord})
     visited = falses(n_pos(f)^2)
     for i in 1:f.n_cols, j in 1:f.n_rows, k in 1:f.n_cols, l in 1:f.n_rows
         s = LTState(Coord(i,j), Coord(k,l), false)
-        ii = state_index(f, s)
+        ii = stateindex(f, s)
         visited[ii] = true
         dists[ii] = find_distances(f, obstacles, s)
     end
@@ -42,7 +42,7 @@ function LTDistanceCache(f::Floor, obstacles::Set{Coord})
     return LTDistanceCache(f, dists)
 end
 
-Base.getindex(c::LTDistanceCache, s::LTState) = c.distances[state_index(c.floor, s)]
+Base.getindex(c::LTDistanceCache, s::LTState) = c.distances[stateindex(c.floor, s)]
 
 function n_clear_cells(d::ClearDistances, dir::Int)
     if dir <= 4

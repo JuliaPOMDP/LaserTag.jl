@@ -26,7 +26,7 @@ p = gen_lasertag()
 # check observation model consistency
 rng = MersenneTwister(12)
 N = 1_000_000
-s = initial_state(p, rng)
+s = initialstate(p, rng)
 od = observation(p, s)
 obs = [rand(rng, od) for i in 1:N]
 for dir in 1:8
@@ -69,7 +69,7 @@ hist = simulate(sim, p, pol, filter)
 
 tikz_pic(LaserTagVis(p))
 
-s = initial_state(p, MersenneTwister(4))
+s = initialstate(p, MersenneTwister(4))
 @inferred generate_sor(p, s, 1, MersenneTwister(4))
 
 sp, o, r = generate_sor(p, s, 1, MersenneTwister(4))

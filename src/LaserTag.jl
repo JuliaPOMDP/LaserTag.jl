@@ -125,7 +125,7 @@ include("transition.jl")
 include("obs_models.jl")
 include("initial.jl")
 
-function reward(p::LaserTagPOMDP, s::LTState, a::Int, sp::LTState)
+function POMDPs.reward(p::LaserTagPOMDP, s::LTState, a::Int, sp::LTState)
     if a == TAG_ACTION
         if s.robot == s.opponent
             @assert sp.terminal
@@ -139,7 +139,7 @@ function reward(p::LaserTagPOMDP, s::LTState, a::Int, sp::LTState)
 end
 
 isterminal(p::LaserTagPOMDP, s::LTState) = s.terminal
-discount(p::LaserTagPOMDP) = p.discount
+POMDPs.discount(p::LaserTagPOMDP) = p.discount
 
 include("problem_gen.jl")
 include("heuristics.jl")

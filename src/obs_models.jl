@@ -64,7 +64,7 @@ function DESPOTEmu(f::Floor, std::Float64, maxread::Int=ceil(Int, max_diag(f)))
     return DESPOTEmu(std, ReadingCDF(cardcdf, diagcdf))
 end
 
-function rand(rng::Random.AbstractRNG, d::LTObsDist{DESPOTEmu})
+function Random.rand(rng::Random.AbstractRNG, d::LTObsDist{DESPOTEmu})
     if d.same
         return D_SAME_LOC
     end
@@ -78,7 +78,7 @@ function rand(rng::Random.AbstractRNG, d::LTObsDist{DESPOTEmu})
     return meas
 end
 
-function pdf(d::LTObsDist{DESPOTEmu}, m::DMeas)
+function Distributions.pdf(d::LTObsDist{DESPOTEmu}, m::DMeas)
     if d.same
         return m == D_SAME_LOC ? 1.0 : 0.0
     elseif m == D_SAME_LOC
@@ -96,7 +96,7 @@ function pdf(d::LTObsDist{DESPOTEmu}, m::DMeas)
     return p
 end
 
-function observation(p::LaserTagPOMDP, sp::LTState)
+function POMDPs.observation(p::LaserTagPOMDP, sp::LTState)
     if sp.robot == sp.opponent
         return LTObsDist{typeof(p.obs_model)}(true)
     else

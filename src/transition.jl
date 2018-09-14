@@ -7,7 +7,7 @@ struct LTTransDist
 end
 LTTransDist(rob::Coord, prev_opp::Coord, probs::AbstractVector) = LTTransDist(false, rob, prev_opp, probs)
 
-function rand(rng::AbstractRNG, d::LTTransDist)
+function Random.rand(rng::AbstractRNG, d::LTTransDist)
     if d.terminal
         return LTState(d.rob, d.prev_opp, true)
     end
@@ -20,7 +20,7 @@ function rand(rng::AbstractRNG, d::LTTransDist)
     return LTState(d.rob, opp, false)
 end
 
-function pdf(d::LTTransDist, s::LTState)::Float64
+function Distributions.pdf(d::LTTransDist, s::LTState)::Float64
     if d.terminal 
         return s.terminal ? 1.0 : 0.0
     elseif s.terminal || s.robot != d.rob || sum(abs, s.opponent-d.prev_opp) > 1
@@ -62,7 +62,7 @@ function Base.iterate(d::LTTransDist,i::Int)
 end
 
 
-function transition(p::LaserTagPOMDP, s::LTState, a::Int)
+function POMDPs.transition(p::LaserTagPOMDP, s::LTState, a::Int)
     if s.terminal || a == TAG_ACTION && s.robot == s.opponent
         return LTTransDist(true, s.robot, s.opponent, SVector(1., 0., 0., 0., 0.))
     end
