@@ -1,5 +1,5 @@
 # for fully-observable case
-immutable MoveTowards <: Policy end
+struct MoveTowards <: Policy end
 
 function action(p::MoveTowards, s::LTState)
     # try to sneak up diagonally
@@ -19,10 +19,10 @@ function action(p::MoveTowards, s::LTState)
     end
 end
 
-immutable MoveTowardsSampled{RNG} <: Policy
+struct MoveTowardsSampled{RNG} <: Policy
     rng::RNG
 end
-MoveTowardsSampled() = MoveTowardsSampled(Base.GLOBAL_RNG)
+MoveTowardsSampled() = MoveTowardsSampled(GLOBAL_RNG)
 
 function action(p::MoveTowardsSampled, b)
     s = rand(p.rng, b)
@@ -31,22 +31,22 @@ end
 
 
 
-immutable OptimalMLSolver <: Solver
+struct OptimalMLSolver <: Solver
     solver::Solver
 end
 
-immutable OptimalML{P<:Policy} <: Policy
+struct OptimalML{P<:Policy} <: Policy
     fo_policy::P 
 end
 
 solve(sol::OptimalMLSolver, p::Union{MDP,POMDP}) = OptimalML(solve(sol.solver, p))
 action(pol::OptimalML, b) = action(pol.fo_policy, mode(b))
 
-immutable BestExpectedSolver <: Solver
+struct BestExpectedSolver <: Solver
     solver::Solver
 end
 
-immutable BestExpected{P<:Policy} <: Policy
+struct BestExpected{P<:Policy} <: Policy
     fo_policy::P
 end
 

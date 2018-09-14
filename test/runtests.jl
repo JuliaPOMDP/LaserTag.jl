@@ -1,6 +1,8 @@
+using Random
 using LaserTag
-using Base.Test
-using POMDPToolbox
+using Test
+using POMDPModels
+using POMDPModelTools
 using ParticleFilters
 using POMDPs
 

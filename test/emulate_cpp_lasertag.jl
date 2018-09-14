@@ -1,7 +1,7 @@
 # try to emulate the output of $ ./lasertag -r 7
 using LaserTag
 using POMDPs
-using Base.Test
+using Test
 
 model = LaserTagPOMDP{DESPOTEmu, DMeas}(
     obstacles = Set{Coord}(

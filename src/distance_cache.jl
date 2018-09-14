@@ -1,4 +1,4 @@
-immutable ClearDistances
+struct ClearDistances
     cardinal::SVector{4, Int}
     diagonal::SVector{4, Int}
 end
@@ -23,7 +23,7 @@ function find_distances(f::Floor, obstacles::Set{Coord}, s::LTState)
     return ClearDistances(card, diag)
 end
 
-type LTDistanceCache
+mutable struct LTDistanceCache
     floor::Floor
     distances::Vector{ClearDistances}
 end
@@ -52,7 +52,7 @@ function n_clear_cells(d::ClearDistances, dir::Int)
     end
 end
 
-immutable ReadingCDF
+struct ReadingCDF
     cardcdf::Matrix{Float64}
     diagcdf::Matrix{Float64}
 end

@@ -1,5 +1,5 @@
-immutable LTInitialBelief
-    robot_init::Nullable{Coord}
+struct LTInitialBelief
+    robot_init::Union{Coord, Nothing}
     floor::Floor
 end
 

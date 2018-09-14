@@ -30,7 +30,7 @@ function gen_lasertag(n_rows::Int,
                       n_cols::Int,
                       n_obstacles::Int,
                       obs_model::ObsModel=DESPOTEmu(Floor(n_rows, n_cols), 2.5);
-                      rng=Base.GLOBAL_RNG,
+                      rng=GLOBAL_RNG,
                       kwargs...
                      )
     
@@ -61,7 +61,7 @@ end
 
 function gen_lasertag(n_rows::Int=7,
                       n_cols::Int=11;
-                      rng=Base.GLOBAL_RNG,
+                      rng=GLOBAL_RNG,
                       obstacles=gen_obstacles(n_rows, n_cols, 8, rng),
                       obs_model::ObsModel=DESPOTEmu(Floor(n_rows, n_cols), 2.5),
                       robot_position_known::Bool=false,
@@ -69,9 +69,9 @@ function gen_lasertag(n_rows::Int=7,
 
     f = Floor(n_rows, n_cols)
     if robot_position_known
-        r = Nullable(Coord(rand(rng, 1:f.n_cols), rand(rng, 1:f.n_rows)))
+        r = Coord(rand(rng, 1:f.n_cols), rand(rng, 1:f.n_rows))
     else
-        r = Nullable{Coord}()
+        r = nothing
     end
     M = typeof(obs_model)
     O = obs_type(M)

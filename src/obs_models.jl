@@ -7,7 +7,7 @@ struct LTObsDist{M<:ObsModel}
     LTObsDist{M}(dists::ClearDistances, model::M) where M = new(false, dists, model)
 end
 
-LTObsDist{M<:ObsModel}(dists::ClearDistances, model::M) = LTObsDist{M}(dists, model)
+LTObsDist(dists::ClearDistances, model::M) where {M<:ObsModel} = LTObsDist{M}(dists, model)
 
 struct DESPOTEmu <: ObsModel
     std::Float64
@@ -64,7 +64,7 @@ function DESPOTEmu(f::Floor, std::Float64, maxread::Int=ceil(Int, max_diag(f)))
     return DESPOTEmu(std, ReadingCDF(cardcdf, diagcdf))
 end
 
-function rand(rng::AbstractRNG, d::LTObsDist{DESPOTEmu})
+function rand(rng::Random.AbstractRNG, d::LTObsDist{DESPOTEmu})
     if d.same
         return D_SAME_LOC
     end

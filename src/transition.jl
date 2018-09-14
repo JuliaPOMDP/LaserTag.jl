@@ -1,4 +1,4 @@
-immutable LTTransDist
+struct LTTransDist
     terminal::Bool
     rob::Coord
     prev_opp::Coord
@@ -44,12 +44,32 @@ function pdf(d::LTTransDist, s::LTState)::Float64
     end
 end
 
-iterator(d::LTTransDist) = d
+# iterator(d::LTTransDist) = d
 
-Base.start(d::LTTransDist) = 1
-Base.done(d::LTTransDist, i::Int) = i > 5 || d.terminal && i > 1
-function Base.next(d::LTTransDist, i::Int)
-    if d.terminal
+# Base.start(d::LTTransDist) = 1
+# Base.done(d::LTTransDist, i::Int) = i > 5 || d.terminal && i > 1
+
+
+
+# function Base.next(d::LTTransDist, i::Int)
+#     if d.terminal
+#         return (LTState(d.rob, d.prev_opp, true), i+1)
+#     elseif i <= 4
+#         return (LTState(d.rob, d.prev_opp+CARDINALS[i], false), i+1)
+#     else    
+#         return (LTState(d.rob, d.prev_opp, false), i+1)
+#     end
+# end
+
+# Is this the first instance?
+function Base.iterate(d::LTTransDist)
+    return (d,1)
+end
+
+function Base.iterate(d::LTTransDist,i::Int)
+    if i > 5 || d.terminal && i > 1
+        return nothing
+    elseif d.terminal
         return (LTState(d.rob, d.prev_opp, true), i+1)
     elseif i <= 4
         return (LTState(d.rob, d.prev_opp+CARDINALS[i], false), i+1)

@@ -1,13 +1,13 @@
 using TikzPictures
 using ParticleFilters
 
-type LaserTagVis
+mutable struct LaserTagVis
     p::LaserTagPOMDP
-    a::Nullable{Any}
-    r::Nullable{Any}
-    s::Nullable{Any}
-    o::Nullable{Any}
-    b::Nullable{Any}
+    a::Union{Any, Nothing}
+    r::Union{Any, Nothing}
+    s::Union{Any, Nothing}
+    o::Union{Any, Nothing}
+    b::Union{Any, Nothing}
 end
 LaserTagVis(p; s=nothing, a=nothing, o=nothing, b=nothing, r=nothing) = LaserTagVis(p, a, r, s, o, b)
 LaserTagVis(p::LaserTagPOMDP, arspobp::Tuple) = LaserTagVis(p, arspobp...)
