@@ -4,7 +4,9 @@ module LaserTag
 using Random
 using Printf
 using StaticArrays
+using SpecialFunctions
 using AutoHashEquals
+using POMDPSimulators
 using Parameters
 using StatsBase
 using Distributions

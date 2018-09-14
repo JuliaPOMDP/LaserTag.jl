@@ -29,7 +29,7 @@ mutable struct LTDistanceCache
 end
 
 function LTDistanceCache(f::Floor, obstacles::Set{Coord})
-    dists = Array{ClearDistances}(n_pos(f)^2)
+    dists = Array{ClearDistances}(undef,n_pos(f)^2)
     visited = falses(n_pos(f)^2)
     for i in 1:f.n_cols, j in 1:f.n_rows, k in 1:f.n_cols, l in 1:f.n_rows
         s = LTState(Coord(i,j), Coord(k,l), false)

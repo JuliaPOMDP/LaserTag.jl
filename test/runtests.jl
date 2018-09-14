@@ -1,8 +1,10 @@
-using Random
 using LaserTag
+using Random
 using Test
 using POMDPModels
 using POMDPModelTools
+using POMDPPolicies
+using POMDPSimulators
 using ParticleFilters
 using POMDPs
 

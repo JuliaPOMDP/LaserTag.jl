@@ -25,6 +25,6 @@ function state_index(f::Floor, s::LTState)
     else
         rob = s.robot
         opp = s.opponent
-        return sub2ind((nc,nr,nc,nr), rob[1], rob[2], opp[1], opp[2])
+        return LinearIndices((nc,nr,nc,nr))[rob[1], rob[2], opp[1], opp[2]]
     end
 end

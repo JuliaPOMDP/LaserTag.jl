@@ -20,7 +20,7 @@ gausscdf(mu, sigma, x) = (1+erf((x-mu)/(sigma*sqrt(2))))/2
 
 function DESPOTEmu(f::Floor, std::Float64, maxread::Int=ceil(Int, max_diag(f)))
     maxclear = max(f.n_rows, f.n_cols) - 1
-    cardcdf = Array{Float64}(maxclear + 1, maxread + 1)
+    cardcdf = Array{Float64}(undef, maxclear + 1, maxread + 1)
 
     for dist in 1:maxclear+1 # "dist = LaserRange" from cpp
         cdf = 0.0
@@ -38,7 +38,7 @@ function DESPOTEmu(f::Floor, std::Float64, maxread::Int=ceil(Int, max_diag(f)))
     end
 
     maxclear = min(f.n_rows, f.n_cols) - 1
-    diagcdf = Array{Float64}(maxclear + 1, maxread + 1)
+    diagcdf = Array{Float64}(undef, maxclear + 1, maxread + 1)
 
     for c in 0:maxclear
         dist = sqrt(2)*(c+1)
