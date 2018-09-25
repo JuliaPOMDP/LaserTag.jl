@@ -68,7 +68,7 @@ function Random.rand(rng::Random.AbstractRNG, d::LTObsDist{DESPOTEmu})
     if d.same
         return D_SAME_LOC
     end
-    meas = MVector{8, Int}()
+    meas = MVector{8, Int}(undef)
     for i in 1:4
         meas[i] = max(0, floor(Int, (d.distances.cardinal[i]+1) - abs(d.model.std*randn(rng))))
     end

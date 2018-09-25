@@ -1,6 +1,8 @@
 module LaserTag
 
 # package code goes here
+using POMDPs
+using POMDPModelTools
 using Random
 using Printf
 using StaticArrays
@@ -11,8 +13,6 @@ using Parameters
 using StatsBase
 using Distributions
 using IterTools
-
-using POMDPs
 
 export
     LaserTagPOMDP,
@@ -138,7 +138,7 @@ function POMDPs.reward(p::LaserTagPOMDP, s::LTState, a::Int, sp::LTState)
     end
 end
 
-isterminal(p::LaserTagPOMDP, s::LTState) = s.terminal
+POMDPs.isterminal(p::LaserTagPOMDP, s::LTState) = s.terminal
 POMDPs.discount(p::LaserTagPOMDP) = p.discount
 
 include("problem_gen.jl")

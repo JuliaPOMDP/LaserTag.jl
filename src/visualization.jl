@@ -1,6 +1,15 @@
 using TikzPictures
 using ParticleFilters
 
+function POMDPModelTools.render(m::LaserTagPOMDP, step)
+    return LaserTagVis(m,
+                       get(step, :a, nothing),
+                       get(step, :r, nothing),
+                       get(step, :sp, nothing),
+                       get(step, :o, nothing),
+                       get(step, :bp, nothing))
+end
+
 mutable struct LaserTagVis
     p::LaserTagPOMDP
     a::Union{Any, Nothing}
@@ -13,6 +22,7 @@ LaserTagVis(p; s=nothing, a=nothing, o=nothing, b=nothing, r=nothing) = LaserTag
 LaserTagVis(p::LaserTagPOMDP, arspobp::Tuple) = LaserTagVis(p, arspobp...)
 
 Base.show(io::IO, mime::MIME"image/svg+xml", v::LaserTagVis) = show(io, mime, tikz_pic(v))
+Base.show(io::IO, mime::MIME"text/html", v::LaserTagVis) = show(io, MIME("image/svg+xml"), v)
 
 function Base.show(io::IO, mime::MIME"image/png", v::LaserTagVis)
     fname = tempname()
@@ -85,24 +95,24 @@ function tikz_pic(v::LaserTagVis)
     end
 
     if v.b !== nothing
-        show_belief(o, get(v.b))
+        show_belief(o, v.b)
     end
 
     if v.s !== nothing
-        s = get(v.s)
+        s = v.s
         opp = s.opponent
         rob = s.robot
         fill_square(o, opp[1], opp[2], "orange")
         fill_square(o, rob[1], rob[2], "green")
         if v.o !== nothing
-            show_meas(o, s, get(v.o))
+            show_meas(o, s, v.o)
         end
         if v.a !== nothing
-            aname = ACTION_NAMES[get(v.a)]
+            aname = ACTION_NAMES[v.a]
             println(o, "\\node[above right] at ($((rob[1]-1) * sqsize), $((rob[2]-1) * sqsize)) {$aname};")
         end
         if v.r !== nothing
-            rtext = @sprintf("%0.2f", get(v.r))
+            rtext = @sprintf("%0.2f", v.r)
             println(o, "\\node[below right] at ($((rob[1]-1) * sqsize), $((rob[2]-1) * sqsize)) {$rtext};")
         end
 
@@ -125,7 +135,7 @@ function Base.show(io::IO, mime::MIME"text/plain", v::LaserTagVis)
         for x in 1:n_cols(v.p)
             printed = false
             if v.s !== nothing
-                s = get(v.s)
+                s = v.s
                 if Coord(x,y) == s.robot
                     print(io, 'R')
                     printed = true

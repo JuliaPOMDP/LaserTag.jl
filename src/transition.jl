@@ -44,12 +44,9 @@ function Distributions.pdf(d::LTTransDist, s::LTState)::Float64
     end
 end
 
-# Is this the first instance?
-function Base.iterate(d::LTTransDist)
-    return (d,1)
-end
+POMDPs.support(d::LTTransDist) = d
 
-function Base.iterate(d::LTTransDist,i::Int)
+function Base.iterate(d::LTTransDist, i::Int=1)
     if i > 5 || d.terminal && i > 1
         return nothing
     elseif d.terminal
@@ -61,13 +58,21 @@ function Base.iterate(d::LTTransDist,i::Int)
     end
 end
 
+function Base.length(d::LTTransDist)
+    if d.terminal
+        return 1
+    else
+        return 5
+    end
+end
+
 
 function POMDPs.transition(p::LaserTagPOMDP, s::LTState, a::Int)
     if s.terminal || a == TAG_ACTION && s.robot == s.opponent
         return LTTransDist(true, s.robot, s.opponent, SVector(1., 0., 0., 0., 0.))
     end
 
-    probs = fill!(MVector{5, Float64}(), 0.0)
+    probs = fill!(MVector{5, Float64}(undef), 0.0)
 
     opp = s.opponent
     rob = s.robot

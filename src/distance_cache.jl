@@ -4,8 +4,8 @@ struct ClearDistances
 end
 
 function find_distances(f::Floor, obstacles::Set{Coord}, s::LTState)
-    card = MVector{4, Int}()
-    diag = MVector{4, Int}()
+    card = MVector{4, Int}(undef)
+    diag = MVector{4, Int}(undef)
     for i in 1:4
         d = 1
         while !opaque(f, obstacles, s, s.robot+d*CARDINALS[i])
@@ -63,8 +63,8 @@ function ReadingCDF(f::Floor,
                     shortonly::Bool=false,
                     maxread::Int=ceil(Int, max_diag(f)+4*std))
     maxclear = max(f.n_rows, f.n_cols) - 1
-    cardcdf = Array{Float64}(maxclear + 1, maxread + 1)
-    diagcdf = Array{Float64}(maxclear + 1, maxread + 1)
+    cardcdf = Array{Float64}(undef, maxclear + 1, maxread + 1)
+    diagcdf = Array{Float64}(undef, maxclear + 1, maxread + 1)
 
     for c in 0:maxclear
         for r in 0:maxread

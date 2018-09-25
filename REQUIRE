@@ -1,9 +1,0 @@
-julia 0.7
-StaticArrays
-AutoHashEquals
-Parameters
-StatsBase 0.15
-Distributions
-TikzPictures
-ParticleFilters
-IterTools

@@ -68,6 +68,7 @@ filter = SIRParticleFilter(p, 10000)
 hist = simulate(sim, p, pol, filter)
 
 tikz_pic(LaserTagVis(p))
+render(p, first(eachstep(hist)))
 
 s = initialstate(p, MersenneTwister(4))
 @inferred generate_sor(p, s, 1, MersenneTwister(4))
@@ -75,6 +76,6 @@ s = initialstate(p, MersenneTwister(4))
 sp, o, r = generate_sor(p, s, 1, MersenneTwister(4))
 @inferred observation(p, s, 1, sp)
 
-show(STDOUT, MIME("text/plain"), LaserTagVis(cpp_emu_lasertag(4)))
+show(stdout, MIME("text/plain"), LaserTagVis(cpp_emu_lasertag(4)))
 
 include("emulate_cpp_lasertag.jl")
