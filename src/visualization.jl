@@ -1,18 +1,28 @@
 using TikzPictures
 using ParticleFilters
 
-type LaserTagVis
+function POMDPModelTools.render(m::LaserTagPOMDP, step)
+    return LaserTagVis(m,
+                       get(step, :a, nothing),
+                       get(step, :r, nothing),
+                       get(step, :sp, nothing),
+                       get(step, :o, nothing),
+                       get(step, :bp, nothing))
+end
+
+mutable struct LaserTagVis
     p::LaserTagPOMDP
-    a::Nullable{Any}
-    r::Nullable{Any}
-    s::Nullable{Any}
-    o::Nullable{Any}
-    b::Nullable{Any}
+    a::Union{Any, Nothing}
+    r::Union{Any, Nothing}
+    s::Union{Any, Nothing}
+    o::Union{Any, Nothing}
+    b::Union{Any, Nothing}
 end
 LaserTagVis(p; s=nothing, a=nothing, o=nothing, b=nothing, r=nothing) = LaserTagVis(p, a, r, s, o, b)
 LaserTagVis(p::LaserTagPOMDP, arspobp::Tuple) = LaserTagVis(p, arspobp...)
 
 Base.show(io::IO, mime::MIME"image/svg+xml", v::LaserTagVis) = show(io, mime, tikz_pic(v))
+Base.show(io::IO, mime::MIME"text/html", v::LaserTagVis) = show(io, MIME("image/svg+xml"), v)
 
 function Base.show(io::IO, mime::MIME"image/png", v::LaserTagVis)
     fname = tempname()
@@ -84,25 +94,25 @@ function tikz_pic(v::LaserTagVis)
         fill_square(o, c[1], c[2], "gray")
     end
 
-    if !isnull(v.b)
-        show_belief(o, get(v.b))
+    if v.b !== nothing
+        show_belief(o, v.b)
     end
 
-    if !isnull(v.s)
-        s = get(v.s)
+    if v.s !== nothing
+        s = v.s
         opp = s.opponent
         rob = s.robot
         fill_square(o, opp[1], opp[2], "orange")
         fill_square(o, rob[1], rob[2], "green")
-        if !isnull(v.o)
-            show_meas(o, s, get(v.o))
+        if v.o !== nothing
+            show_meas(o, s, v.o)
         end
-        if !isnull(v.a)
-            aname = ACTION_NAMES[get(v.a)]
+        if v.a !== nothing
+            aname = ACTION_NAMES[v.a]
             println(o, "\\node[above right] at ($((rob[1]-1) * sqsize), $((rob[2]-1) * sqsize)) {$aname};")
         end
-        if !isnull(v.r)
-            rtext = @sprintf("%0.2f", get(v.r))
+        if v.r !== nothing
+            rtext = @sprintf("%0.2f", v.r)
             println(o, "\\node[below right] at ($((rob[1]-1) * sqsize), $((rob[2]-1) * sqsize)) {$rtext};")
         end
 
@@ -124,8 +134,8 @@ function Base.show(io::IO, mime::MIME"text/plain", v::LaserTagVis)
     for y in n_rows(v.p):-1:1
         for x in 1:n_cols(v.p)
             printed = false
-            if !isnull(v.s)
-                s = get(v.s)
+            if v.s !== nothing
+                s = v.s
                 if Coord(x,y) == s.robot
                     print(io, 'R')
                     printed = true

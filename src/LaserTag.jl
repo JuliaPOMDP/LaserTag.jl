@@ -1,16 +1,18 @@
-__precompile__()
-
 module LaserTag
 
 # package code goes here
+using POMDPs
+using POMDPModelTools
+using Random
+using Printf
 using StaticArrays
+using SpecialFunctions
 using AutoHashEquals
+using POMDPSimulators
 using Parameters
 using StatsBase
 using Distributions
 using IterTools
-
-importall POMDPs
 
 export
     LaserTagPOMDP,
@@ -39,16 +41,16 @@ const Coord = SVector{2, Int}
 const CMeas = MVector{8, Float64}
 const DMeas = MVector{8, Int}
 
-const C_SAME_LOC = fill!(MVector{8, Float64}(), -1.0)
-const D_SAME_LOC = fill!(MVector{8, Int64}(), -1)
+const C_SAME_LOC = fill!(MVector{8, Float64}(undef), -1.0)
+const D_SAME_LOC = fill!(MVector{8, Int64}(undef), -1)
 
-@auto_hash_equals immutable LTState # XXX auto_hash_equals isn't correct for terminal
+@auto_hash_equals struct LTState # XXX auto_hash_equals isn't correct for terminal
     robot::Coord
     opponent::Coord
     terminal::Bool
 end
 
-immutable Floor
+struct Floor
     n_rows::Int
     n_cols::Int
 end
@@ -70,13 +72,13 @@ obs_type(om::ObsModel) = obs_type(typeof(om))
 
 include("distance_cache.jl")
 
-@with_kw immutable LaserTagPOMDP{M<:ObsModel, O<:Union{CMeas, DMeas}} <: POMDP{LTState, Int, O}
+@with_kw struct LaserTagPOMDP{M<:ObsModel, O<:Union{CMeas, DMeas}} <: POMDP{LTState, Int, O}
     tag_reward::Float64         = 10.0
     step_cost::Float64          = 1.0
     discount::Float64           = 0.95
     floor::Floor                = Floor(7, 11)
     obstacles::Set{Coord}       = Set{Coord}()
-    robot_init::Nullable{Coord} = Nullable{Coord}()
+    robot_init::Union{Coord, Nothing} = nothing
     diag_actions::Bool          = false
     dcache::LTDistanceCache     = LTDistanceCache(floor, obstacles)
     obs_model::M                = DESPOTEmu(floor, 2.5)
@@ -123,7 +125,7 @@ include("transition.jl")
 include("obs_models.jl")
 include("initial.jl")
 
-function reward(p::LaserTagPOMDP, s::LTState, a::Int, sp::LTState)
+function POMDPs.reward(p::LaserTagPOMDP, s::LTState, a::Int, sp::LTState)
     if a == TAG_ACTION
         if s.robot == s.opponent
             @assert sp.terminal
@@ -136,8 +138,8 @@ function reward(p::LaserTagPOMDP, s::LTState, a::Int, sp::LTState)
     end
 end
 
-isterminal(p::LaserTagPOMDP, s::LTState) = s.terminal
-discount(p::LaserTagPOMDP) = p.discount
+POMDPs.isterminal(p::LaserTagPOMDP, s::LTState) = s.terminal
+POMDPs.discount(p::LaserTagPOMDP) = p.discount
 
 include("problem_gen.jl")
 include("heuristics.jl")

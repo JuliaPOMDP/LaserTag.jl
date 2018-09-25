@@ -1,4 +1,4 @@
-immutable LTTransDist
+struct LTTransDist
     terminal::Bool
     rob::Coord
     prev_opp::Coord
@@ -7,7 +7,7 @@ immutable LTTransDist
 end
 LTTransDist(rob::Coord, prev_opp::Coord, probs::AbstractVector) = LTTransDist(false, rob, prev_opp, probs)
 
-function rand(rng::AbstractRNG, d::LTTransDist)
+function Random.rand(rng::AbstractRNG, d::LTTransDist)
     if d.terminal
         return LTState(d.rob, d.prev_opp, true)
     end
@@ -20,7 +20,7 @@ function rand(rng::AbstractRNG, d::LTTransDist)
     return LTState(d.rob, opp, false)
 end
 
-function pdf(d::LTTransDist, s::LTState)::Float64
+function Distributions.pdf(d::LTTransDist, s::LTState)::Float64
     if d.terminal 
         return s.terminal ? 1.0 : 0.0
     elseif s.terminal || s.robot != d.rob || sum(abs, s.opponent-d.prev_opp) > 1
@@ -44,12 +44,12 @@ function pdf(d::LTTransDist, s::LTState)::Float64
     end
 end
 
-iterator(d::LTTransDist) = d
+POMDPs.support(d::LTTransDist) = d
 
-Base.start(d::LTTransDist) = 1
-Base.done(d::LTTransDist, i::Int) = i > 5 || d.terminal && i > 1
-function Base.next(d::LTTransDist, i::Int)
-    if d.terminal
+function Base.iterate(d::LTTransDist, i::Int=1)
+    if i > 5 || d.terminal && i > 1
+        return nothing
+    elseif d.terminal
         return (LTState(d.rob, d.prev_opp, true), i+1)
     elseif i <= 4
         return (LTState(d.rob, d.prev_opp+CARDINALS[i], false), i+1)
@@ -58,13 +58,21 @@ function Base.next(d::LTTransDist, i::Int)
     end
 end
 
+function Base.length(d::LTTransDist)
+    if d.terminal
+        return 1
+    else
+        return 5
+    end
+end
 
-function transition(p::LaserTagPOMDP, s::LTState, a::Int)
+
+function POMDPs.transition(p::LaserTagPOMDP, s::LTState, a::Int)
     if s.terminal || a == TAG_ACTION && s.robot == s.opponent
         return LTTransDist(true, s.robot, s.opponent, SVector(1., 0., 0., 0., 0.))
     end
 
-    probs = fill!(MVector{5, Float64}(), 0.0)
+    probs = fill!(MVector{5, Float64}(undef), 0.0)
 
     opp = s.opponent
     rob = s.robot

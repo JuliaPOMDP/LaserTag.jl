@@ -30,7 +30,7 @@ function gen_lasertag(n_rows::Int,
                       n_cols::Int,
                       n_obstacles::Int,
                       obs_model::ObsModel=DESPOTEmu(Floor(n_rows, n_cols), 2.5);
-                      rng=Base.GLOBAL_RNG,
+                      rng=Random.GLOBAL_RNG,
                       kwargs...
                      )
     
@@ -43,11 +43,11 @@ function gen_lasertag(n_rows::Int,
                        )
 end
 
-function gen_obstacles(n_rows::Int, n_cols::Int, n_obstacles::Int, rng::AbstractRNG=Base.GLOBAL_RNG)
+function gen_obstacles(n_rows::Int, n_cols::Int, n_obstacles::Int, rng::AbstractRNG=Random.GLOBAL_RNG)
     f = Floor(n_rows, n_cols)
     obs_inds = randperm(rng, n_pos(f))[1:n_obstacles] # XXX inefficient
-    obs_subs = ind2sub((n_cols, n_rows), obs_inds)
-    obstacles = Set{Coord}(Coord(p) for p in zip(obs_subs...))
+    obs_subs = CartesianIndices((n_cols, n_rows))[obs_inds]
+    obstacles = Set{Coord}(Coord(p.I) for p in obs_subs)
     for c in obstacles
         if !inside(f, c)
             @show c
@@ -61,7 +61,7 @@ end
 
 function gen_lasertag(n_rows::Int=7,
                       n_cols::Int=11;
-                      rng=Base.GLOBAL_RNG,
+                      rng=Random.GLOBAL_RNG,
                       obstacles=gen_obstacles(n_rows, n_cols, 8, rng),
                       obs_model::ObsModel=DESPOTEmu(Floor(n_rows, n_cols), 2.5),
                       robot_position_known::Bool=false,
@@ -69,9 +69,9 @@ function gen_lasertag(n_rows::Int=7,
 
     f = Floor(n_rows, n_cols)
     if robot_position_known
-        r = Nullable(Coord(rand(rng, 1:f.n_cols), rand(rng, 1:f.n_rows)))
+        r = Coord(rand(rng, 1:f.n_cols), rand(rng, 1:f.n_rows))
     else
-        r = Nullable{Coord}()
+        r = nothing
     end
     M = typeof(obs_model)
     O = obs_type(M)

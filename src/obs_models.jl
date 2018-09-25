@@ -7,7 +7,7 @@ struct LTObsDist{M<:ObsModel}
     LTObsDist{M}(dists::ClearDistances, model::M) where M = new(false, dists, model)
 end
 
-LTObsDist{M<:ObsModel}(dists::ClearDistances, model::M) = LTObsDist{M}(dists, model)
+LTObsDist(dists::ClearDistances, model::M) where {M<:ObsModel} = LTObsDist{M}(dists, model)
 
 struct DESPOTEmu <: ObsModel
     std::Float64
@@ -20,7 +20,7 @@ gausscdf(mu, sigma, x) = (1+erf((x-mu)/(sigma*sqrt(2))))/2
 
 function DESPOTEmu(f::Floor, std::Float64, maxread::Int=ceil(Int, max_diag(f)))
     maxclear = max(f.n_rows, f.n_cols) - 1
-    cardcdf = Array{Float64}(maxclear + 1, maxread + 1)
+    cardcdf = Array{Float64}(undef, maxclear + 1, maxread + 1)
 
     for dist in 1:maxclear+1 # "dist = LaserRange" from cpp
         cdf = 0.0
@@ -38,7 +38,7 @@ function DESPOTEmu(f::Floor, std::Float64, maxread::Int=ceil(Int, max_diag(f)))
     end
 
     maxclear = min(f.n_rows, f.n_cols) - 1
-    diagcdf = Array{Float64}(maxclear + 1, maxread + 1)
+    diagcdf = Array{Float64}(undef, maxclear + 1, maxread + 1)
 
     for c in 0:maxclear
         dist = sqrt(2)*(c+1)
@@ -64,11 +64,11 @@ function DESPOTEmu(f::Floor, std::Float64, maxread::Int=ceil(Int, max_diag(f)))
     return DESPOTEmu(std, ReadingCDF(cardcdf, diagcdf))
 end
 
-function rand(rng::AbstractRNG, d::LTObsDist{DESPOTEmu})
+function Random.rand(rng::Random.AbstractRNG, d::LTObsDist{DESPOTEmu})
     if d.same
         return D_SAME_LOC
     end
-    meas = MVector{8, Int}()
+    meas = MVector{8, Int}(undef)
     for i in 1:4
         meas[i] = max(0, floor(Int, (d.distances.cardinal[i]+1) - abs(d.model.std*randn(rng))))
     end
@@ -78,7 +78,7 @@ function rand(rng::AbstractRNG, d::LTObsDist{DESPOTEmu})
     return meas
 end
 
-function pdf(d::LTObsDist{DESPOTEmu}, m::DMeas)
+function Distributions.pdf(d::LTObsDist{DESPOTEmu}, m::DMeas)
     if d.same
         return m == D_SAME_LOC ? 1.0 : 0.0
     elseif m == D_SAME_LOC
@@ -96,7 +96,7 @@ function pdf(d::LTObsDist{DESPOTEmu}, m::DMeas)
     return p
 end
 
-function observation(p::LaserTagPOMDP, sp::LTState)
+function POMDPs.observation(p::LaserTagPOMDP, sp::LTState)
     if sp.robot == sp.opponent
         return LTObsDist{typeof(p.obs_model)}(true)
     else

@@ -1,5 +1,5 @@
-immutable LTInitialBelief
-    robot_init::Nullable{Coord}
+struct LTInitialBelief
+    robot_init::Union{Coord, Nothing}
     floor::Floor
 end
 
@@ -18,24 +18,24 @@ function iterator(b::LTInitialBelief)
     return states
 end
 
-function rand(rng::AbstractRNG, b::LTInitialBelief)
+function Random.rand(rng::AbstractRNG, b::LTInitialBelief)
     opp = Coord(rand(rng, 1:b.floor.n_cols), rand(rng, 1:b.floor.n_rows))
-    if isnull(b.robot_init)
+    if b.robot_init === nothing
         rob = Coord(rand(rng, 1:b.floor.n_cols), rand(rng, 1:b.floor.n_rows))
     else
-        rob = get(b.robot_init)
+        rob = b.robot_init
     end
     return LTState(rob, opp, false)
 end
 
-function pdf(b::LTInitialBelief, s::LTState)
+function Distributions.pdf(b::LTInitialBelief, s::LTState)
     if s.terminal
         return 0.0
     else
-        if isnull(b.robot_init)
+        if b.robot_init === nothing
             return (1/n_pos(b.floor))^2
         else
-            if s.robot == get(b.robot_init)
+            if s.robot == b.robot_init
                 return 1/n_pos(b.floor)
             else
                 return 0.0
@@ -44,4 +44,4 @@ function pdf(b::LTInitialBelief, s::LTState)
     end
 end
 
-initial_state_distribution(p::LaserTagPOMDP) = LTInitialBelief(p.robot_init, p.floor)
+POMDPSimulators.initialstate_distribution(p::LaserTagPOMDP) = LTInitialBelief(p.robot_init, p.floor)

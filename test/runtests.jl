@@ -1,6 +1,10 @@
 using LaserTag
-using Base.Test
-using POMDPToolbox
+using Random
+using Test
+using POMDPModels
+using POMDPModelTools
+using POMDPPolicies
+using POMDPSimulators
 using ParticleFilters
 using POMDPs
 
@@ -22,7 +26,7 @@ p = gen_lasertag()
 # check observation model consistency
 rng = MersenneTwister(12)
 N = 1_000_000
-s = initial_state(p, rng)
+s = initialstate(p, rng)
 od = observation(p, s)
 obs = [rand(rng, od) for i in 1:N]
 for dir in 1:8
@@ -64,13 +68,14 @@ filter = SIRParticleFilter(p, 10000)
 hist = simulate(sim, p, pol, filter)
 
 tikz_pic(LaserTagVis(p))
+render(p, first(eachstep(hist)))
 
-s = initial_state(p, MersenneTwister(4))
+s = initialstate(p, MersenneTwister(4))
 @inferred generate_sor(p, s, 1, MersenneTwister(4))
 
 sp, o, r = generate_sor(p, s, 1, MersenneTwister(4))
 @inferred observation(p, s, 1, sp)
 
-show(STDOUT, MIME("text/plain"), LaserTagVis(cpp_emu_lasertag(4)))
+show(stdout, MIME("text/plain"), LaserTagVis(cpp_emu_lasertag(4)))
 
 include("emulate_cpp_lasertag.jl")
