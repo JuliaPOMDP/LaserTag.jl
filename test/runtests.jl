@@ -69,6 +69,8 @@ hist = simulate(sim, p, pol, filter)
 
 tikz_pic(LaserTagVis(p))
 render(p, first(eachstep(hist)))
+io = IOBuffer()
+show(io, MIME("image/png"), render(p, first(eachstep(hist))))
 
 s = initialstate(p, MersenneTwister(4))
 @inferred generate_sor(p, s, 1, MersenneTwister(4))

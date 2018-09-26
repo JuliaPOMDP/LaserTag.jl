@@ -29,7 +29,7 @@ function Base.show(io::IO, mime::MIME"image/png", v::LaserTagVis)
     save(PDF(fname), tikz_pic(v))
     run(`convert -flatten $(fname*".pdf") $(fname*".png")`)
     open(fname*".png") do f
-        write(io, readstring(f))
+        write(io, f)
     end
     run(`rm $(fname*".pdf")`)
     run(`rm $(fname*".png")`)
