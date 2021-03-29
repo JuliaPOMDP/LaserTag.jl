@@ -26,7 +26,7 @@ p = gen_lasertag()
 # check observation model consistency
 rng = MersenneTwister(12)
 N = 1_000_000
-s = initialstate(p, rng)
+s = rand(rng, initialstate(p))
 od = observation(p, s)
 obs = [rand(rng, od) for i in 1:N]
 for dir in 1:8
@@ -77,10 +77,10 @@ catch ex
     sprint(showerror, ex)
 end
 
-s = initialstate(p, MersenneTwister(4))
-@inferred generate_sor(p, s, 1, MersenneTwister(4))
+s = rand(MersenneTwister(4), initialstate(p))
+@inferred @gen(:sp, :o, :r)(p, s, 1, MersenneTwister(4))
 
-sp, o, r = generate_sor(p, s, 1, MersenneTwister(4))
+sp, o, r = @gen(:sp, :o, :r)(p, s, 1, MersenneTwister(4))
 @inferred observation(p, s, 1, sp)
 
 show(stdout, MIME("text/plain"), LaserTagVis(cpp_emu_lasertag(4)))

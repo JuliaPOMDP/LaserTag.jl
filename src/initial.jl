@@ -44,4 +44,4 @@ function Distributions.pdf(b::LTInitialBelief, s::LTState)
     end
 end
 
-POMDPSimulators.initialstate_distribution(p::LaserTagPOMDP) = LTInitialBelief(p.robot_init, p.floor)
+POMDPs.initialstate(p::LaserTagPOMDP) = LTInitialBelief(p.robot_init, p.floor)

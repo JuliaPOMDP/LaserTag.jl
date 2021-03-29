@@ -3,11 +3,9 @@ language: julia
 os:
   - linux
 julia:
-  - 1.0
+  - 1
 notifications:
   email: false
 after_success:
-  # push coverage results to Coveralls
-  - julia -e 'cd(Pkg.dir("LaserTag")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
-  # push coverage results to Codecov
-  - julia -e 'cd(Pkg.dir("LaserTag")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+  - julia --project -e 'import Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+  - julia --project -e 'import Pkg; Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'

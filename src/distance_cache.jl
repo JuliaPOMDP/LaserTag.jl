@@ -1,7 +1,12 @@
-struct ClearDistances
+mutable struct ClearDistances
     cardinal::SVector{4, Int}
     diagonal::SVector{4, Int}
 end
+
+import Base.==
+==(a::ClearDistances, b::ClearDistances) = a.cardinal == b.cardinal && a.diagonal == b.diagonal
+
+const CD_SAME_LOC = ClearDistances(fill(-1, 4), fill(-1, 4))
 
 function find_distances(f::Floor, obstacles::Set{Coord}, s::LTState)
     card = MVector{4, Int}(undef)
@@ -35,10 +40,10 @@ function LTDistanceCache(f::Floor, obstacles::Set{Coord})
         s = LTState(Coord(i,j), Coord(k,l), false)
         ii = stateindex(f, s)
         visited[ii] = true
-        dists[ii] = find_distances(f, obstacles, s)
+        dists[ii] = s.opponent == s.robot ? CD_SAME_LOC : find_distances(f, obstacles, s)
     end
     @assert all(visited)
-    push!(dists, ClearDistances(zeros(4), zeros(4)))
+    push!(dists, CD_SAME_LOC)
     return LTDistanceCache(f, dists)
 end
 

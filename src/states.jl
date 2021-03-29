@@ -6,13 +6,13 @@ function states(f::Floor) # inefficient?
         s = LTState(Coord(i,j), Coord(k,l), false)
         vec[stateindex(f, s)] = s
     end
-    vec[end] = LTState(Coord(1,1), Coord(1,1), true)    
+    vec[end] = LTState(Coord(1,1), Coord(1,1), true)
     return vec
 end
 
 n_pos(f::Floor) = f.n_rows*f.n_cols
 
-POMDPs.n_states(p::LaserTagPOMDP) = n_pos(p.floor)^2+1
+n_states(p::LaserTagPOMDP) = n_pos(p.floor)^2+1
 
 POMDPs.stateindex(p::LaserTagPOMDP, s::LTState) = stateindex(p.floor, s)
 

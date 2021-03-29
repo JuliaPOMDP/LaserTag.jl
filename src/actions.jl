@@ -1,4 +1,4 @@
-POMDPs.n_actions(p::LaserTagPOMDP) = p.diag_actions ? 9 : 5
+n_actions(p::LaserTagPOMDP) = p.diag_actions ? 9 : 5
 POMDPs.actions(p::LaserTagPOMDP) = 1:n_actions(p)
 POMDPs.actionindex(p::LaserTagPOMDP, a::Int) = a
 

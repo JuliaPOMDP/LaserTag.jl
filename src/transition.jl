@@ -47,13 +47,21 @@ end
 POMDPs.support(d::LTTransDist) = d
 
 function Base.iterate(d::LTTransDist, i::Int=1)
-    if i > 5 || d.terminal && i > 1
+    if d.terminal
+        if i > 1
+            return nothing
+        else
+            return (LTState(d.rob, d.prev_opp, true), i+1)
+        end
+    end
+    while i <= 5 && d.probs[i] == 0.0
+        i += 1
+    end
+    if i > 5
         return nothing
-    elseif d.terminal
-        return (LTState(d.rob, d.prev_opp, true), i+1)
     elseif i <= 4
         return (LTState(d.rob, d.prev_opp+CARDINALS[i], false), i+1)
-    else    
+    else
         return (LTState(d.rob, d.prev_opp, false), i+1)
     end
 end

@@ -1,13 +1,9 @@
 struct LTObsDist{M<:ObsModel}
-    same::Bool
     distances::ClearDistances
     model::M
-    
-    LTObsDist{M}(same::Bool) where M = new(true)
-    LTObsDist{M}(dists::ClearDistances, model::M) where M = new(false, dists, model)
 end
 
-LTObsDist(dists::ClearDistances, model::M) where {M<:ObsModel} = LTObsDist{M}(dists, model)
+obs_model(d::LTObsDist) = d.model
 
 struct DESPOTEmu <: ObsModel
     std::Float64
@@ -65,41 +61,38 @@ function DESPOTEmu(f::Floor, std::Float64, maxread::Int=ceil(Int, max_diag(f)))
 end
 
 function Random.rand(rng::Random.AbstractRNG, d::LTObsDist{DESPOTEmu})
-    if d.same
+    if d.distances == CD_SAME_LOC
         return D_SAME_LOC
     end
     meas = MVector{8, Int}(undef)
     for i in 1:4
-        meas[i] = max(0, floor(Int, (d.distances.cardinal[i]+1) - abs(d.model.std*randn(rng))))
+        meas[i] = max(0, floor(Int, n_clear_cells(d.distances, i)+1 - abs(d.model.std*randn(rng))))
     end
     for i in 5:8
-        meas[i] = max(0, floor(Int, (d.distances.diagonal[i-4]+1)*sqrt(2) - abs(d.model.std*randn(rng))))
+        meas[i] = max(0, floor(Int, (n_clear_cells(d.distances, i)+1)*sqrt(2) - abs(d.model.std*randn(rng))))
     end
     return meas
 end
 
 function Distributions.pdf(d::LTObsDist{DESPOTEmu}, m::DMeas)
-    if d.same
-        return m == D_SAME_LOC ? 1.0 : 0.0
-    elseif m == D_SAME_LOC
-        return 0.0
+    a = d.distances == CD_SAME_LOC
+    b = m == D_SAME_LOC
+    if a || b
+        return convert(Float64, a && b)
     end
     p = 1.0
+    model = obs_model(d)
     for dir in 1:8
         if m[dir] == 0
-            p *= cdf(d.model.cdf, dir, n_clear_cells(d.distances, dir), 0)
+            p *= cdf(model.cdf, dir, n_clear_cells(d.distances, dir), 0)
         else
-            p *= (cdf(d.model.cdf, dir, n_clear_cells(d.distances, dir), m[dir]) - 
-                  cdf(d.model.cdf, dir, n_clear_cells(d.distances, dir), m[dir]-1))
+            p *= (cdf(model.cdf, dir, n_clear_cells(d.distances, dir), m[dir]) - 
+                  cdf(model.cdf, dir, n_clear_cells(d.distances, dir), m[dir]-1))
         end
     end
     return p
 end
 
-function POMDPs.observation(p::LaserTagPOMDP, sp::LTState)
-    if sp.robot == sp.opponent
-        return LTObsDist{typeof(p.obs_model)}(true)
-    else
-        return LTObsDist(p.dcache[sp], p.obs_model)
-    end
+function POMDPs.observation(p::LaserTagPOMDP{M}, sp::LTState) where M
+    return LTObsDist(p.dcache[sp], p.obs_model)
 end
