@@ -84,8 +84,10 @@ include("distance_cache.jl")
     obs_model::M                = DESPOTEmu(floor, 2.5)
 end
 
-n_cols(p::LaserTagPOMDP) = p.floor.n_cols
-n_rows(p::LaserTagPOMDP) = p.floor.n_rows
+ltfloor(m::LaserTagPOMDP) = m.floor
+
+n_cols(p::LaserTagPOMDP) = ltfloor(p).n_cols
+n_rows(p::LaserTagPOMDP) = ltfloor(p).n_rows
 
 opaque(p::LaserTagPOMDP, s::LTState, c::Coord) = opaque(p.floor, p.obstacles, s, c)
 
@@ -126,9 +128,12 @@ include("obs_models.jl")
 include("initial.jl")
 
 function POMDPs.reward(p::LaserTagPOMDP, s::LTState, a::Int, sp::LTState)
+    if s.terminal
+        return 0.0
+    end
+
     if a == TAG_ACTION
         if s.robot == s.opponent
-            @assert sp.terminal
             return p.tag_reward
         else
             return -p.tag_reward
