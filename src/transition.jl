@@ -70,7 +70,7 @@ function Base.length(d::LTTransDist)
     if d.terminal
         return 1
     else
-        return 5
+        return sum(prob > 0.0 for prob in d.probs)
     end
 end
 
