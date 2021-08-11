@@ -19,6 +19,16 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 TikzPictures = "37f6aa50-8035-52d0-81c2-5a1d08754b2d"
 
+[compat]
+Distributions = "0.22 - 0.24"
+POMDPModelTools = "0.3"
+POMDPSimulators = "0.3"
+POMDPs = "0.9"
+Parameters = "0.12"
+ParticleFilters = "0.5"
+StaticArrays = "0.12, 1"
+julia = "1"
+
 [extras]
 POMDPModels = "355abbd5-f08e-5560-ac9e-8b5f2592a0ca"
 POMDPPolicies = "182e52fb-cfd0-5e46-8c26-fd0667c990f4"
