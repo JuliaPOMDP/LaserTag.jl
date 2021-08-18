@@ -27,6 +27,7 @@ POMDPs = "0.9"
 Parameters = "0.12"
 ParticleFilters = "0.5"
 StaticArrays = "0.12, 1"
+TikzPictures = "3"
 julia = "1"
 
 [extras]
