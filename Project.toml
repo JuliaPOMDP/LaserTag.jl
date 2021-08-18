@@ -26,6 +26,7 @@ POMDPSimulators = "0.3"
 POMDPs = "0.9"
 Parameters = "0.12"
 ParticleFilters = "0.5"
+SpecialFunctions = "1"
 StaticArrays = "0.12, 1"
 julia = "1"
 
