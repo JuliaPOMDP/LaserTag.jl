@@ -20,6 +20,7 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 TikzPictures = "37f6aa50-8035-52d0-81c2-5a1d08754b2d"
 
 [compat]
+AutoHashEquals = "0.2"
 Distributions = "0.22 - 0.24"
 POMDPModelTools = "0.3"
 POMDPSimulators = "0.3"
