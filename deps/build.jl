@@ -6,13 +6,13 @@ catch ex
         @info("Attempting to install lualatex with apt-get.")
         # cmds = [`sudo apt-get install texlive-latex-base`, `sudo apt-get install texlive-binaries`]
         cmds = [`sudo apt-get install texlive-latex-extra`]
-        try
-            for c in cmds
+        for c in cmds
+            try
                 @info("Running $c")
                 run(c)
+            catch
+                @error("Command failed"; command = c)
             end
-        catch
-            @warn("unable to run 'sudo apt-get install texlive-latex-extra'")
         end
     end
 end
