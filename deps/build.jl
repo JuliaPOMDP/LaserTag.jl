@@ -7,8 +7,12 @@ catch ex
         # cmds = [`sudo apt-get install texlive-latex-base`, `sudo apt-get install texlive-binaries`]
         cmds = [`sudo apt-get install texlive-latex-extra`]
         for c in cmds
-            @info("Running $c")
-            run(c)
+            try
+                @info("Running $c")
+                run(c)
+            catch
+                @error("Command failed", command = c)
+            end
         end
     end
 end
