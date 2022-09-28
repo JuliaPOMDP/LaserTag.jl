@@ -11,7 +11,7 @@ catch ex
                 @info("Running $c")
                 run(c)
             catch
-                @error("Command failed"; command = c)
+                @error("Command failed", command = c)
             end
         end
     end
