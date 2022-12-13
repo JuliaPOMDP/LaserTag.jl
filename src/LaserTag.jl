@@ -143,6 +143,11 @@ function POMDPs.reward(p::LaserTagPOMDP, s::LTState, a::Int, sp::LTState)
     end
 end
 
+# add a function to transform a LTState to a vector 
+function POMDPs.convert_s(T::Type{<:AbstractArray}, s::LTState, p::LaserTagPOMDP)
+    return convert(T, vcat(s.robot, s.opponent, [s.terminal]))
+end
+
 POMDPs.isterminal(p::LaserTagPOMDP, s::LTState) = s.terminal
 POMDPs.discount(p::LaserTagPOMDP) = p.discount
 
