@@ -145,7 +145,7 @@ end
 
 # transform a vector to a LTState
 function POMDPs.convert_s(T::Type{LTState}, v::AbstractArray{Float64}, p::LaserTagPOMDP)
-    return LTState([v[1], v[2]], [v[3], v[4]], v[5])
+    return LTState(Coord(v[1], v[2]), Coord(v[3], v[4]), v[5])
 end
 
 POMDPs.isterminal(p::LaserTagPOMDP, s::LTState) = s.terminal
