@@ -2,9 +2,7 @@ using LaserTag
 using Random
 using Test
 using POMDPModels
-using POMDPModelTools
-using POMDPPolicies
-using POMDPSimulators
+using POMDPTools
 using ParticleFilters
 using POMDPs
 
