@@ -8,7 +8,6 @@ using Printf
 using StaticArrays
 using SpecialFunctions
 using AutoHashEquals
-using Parameters
 using StatsBase
 using Distributions
 using IterTools
@@ -71,7 +70,7 @@ obs_type(om::ObsModel) = obs_type(typeof(om))
 
 include("distance_cache.jl")
 
-@with_kw struct LaserTagPOMDP{M<:ObsModel, O<:Union{CMeas, DMeas}} <: POMDP{LTState, Int, O}
+Base.@kwdef struct LaserTagPOMDP{M<:ObsModel, O<:Union{CMeas, DMeas}} <: POMDP{LTState, Int, O}
     tag_reward::Float64         = 10.0
     step_cost::Float64          = 1.0
     discount::Float64           = 0.95
