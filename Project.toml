@@ -30,6 +30,7 @@ Parameters = "0.12"
 ParticleFilters = "0.5"
 SpecialFunctions = "1"
 StaticArrays = "0.12, 1"
+StatsBase = "0.34"
 TikzPictures = "3"
 julia = "1"
 
