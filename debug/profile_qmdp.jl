@@ -19,7 +19,7 @@ ProfileView.view()
 
 # sim = HistoryRecorder(max_steps=5, rng=MersenneTwister(2), show_progress=true)
 # 
-# filter = SIRParticleFilter(p, 10000)
+# filter = BootstrapFilter(p, 10000)
 # 
 # #=
 # b = initialize_belief(filter, initial_state_distribution(p))

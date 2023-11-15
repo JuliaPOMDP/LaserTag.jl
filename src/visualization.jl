@@ -1,7 +1,7 @@
 using TikzPictures
 using ParticleFilters
 
-function POMDPModelTools.render(m::LaserTagPOMDP, step)
+function POMDPTools.render(m::LaserTagPOMDP, step)
     return LaserTagVis(m,
                        get(step, :a, nothing),
                        get(step, :r, nothing),
