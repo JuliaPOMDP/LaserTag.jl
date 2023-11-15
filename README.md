@@ -9,7 +9,7 @@ The Laser Tag Problem from http://bigbird.comp.nus.edu.sg/m2ap/wordpress/wp-cont
 ## Installation
 
 Note: This package is not currently registered (because the name is not suitable). To install it from the julia REPL, use
-```julia
+```
 ] add https://github.com/JuliaPOMDP/LaserTag.jl.git
 ```
 
