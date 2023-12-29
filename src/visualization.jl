@@ -1,6 +1,13 @@
 using TikzPictures
 using ParticleFilters
 
+VIS_BACKEND::Symbol = :ImageMagick
+
+function set_visualization_backend!(backend::Symbol)
+    @assert backend ∈ (:ImageMagick, :Inkscape)
+    global VIS_BACKEND = backend
+end
+
 function POMDPTools.render(m::LaserTagPOMDP, step)
     return LaserTagVis(m,
                        get(step, :a, nothing),
@@ -25,6 +32,16 @@ Base.show(io::IO, mime::MIME"image/svg+xml", v::LaserTagVis) = show(io, mime, ti
 Base.show(io::IO, mime::MIME"text/html", v::LaserTagVis) = show(io, MIME("image/svg+xml"), v)
 
 function Base.show(io::IO, mime::MIME"image/png", v::LaserTagVis)
+    if VIS_BACKEND == :ImageMagick
+        _show_imagemagick(io, mime, v)
+    elseif VIS_BACKEND == :Inkscape
+        _show_imagemagick(io, mime, v)
+    else
+        error("Unknown Backend -- must be either :ImageMagick or :Inkscape")
+    end
+end
+
+function _show_imagemagick(io::IO, ::MIME"image/png", v::LaserTagVis)
     fname = tempname()
     save(PDF(fname), tikz_pic(v))
     run(`convert -flatten $(fname*".pdf") $(fname*".png")`)
@@ -33,6 +50,19 @@ function Base.show(io::IO, mime::MIME"image/png", v::LaserTagVis)
     end
     run(`rm $(fname*".pdf")`)
     run(`rm $(fname*".png")`)
+    return io
+end
+
+function _show_inkscape(io::IO, ::MIME"image/png", v::LaserTagVis)
+    fname = tempname()
+    save(PDF(fname), tikz_pic(v))
+    run(`inkscape --export-background-opacity=1 --export-dpi=300 --export-type=png $(fname).pdf`)
+    new_name = fname * ".png"
+    open(new_name) do f
+        write(io, f)
+    end
+    run(`rm $(fname*".pdf")`)
+    run(`rm $(new_name)`)
     return io
 end
 

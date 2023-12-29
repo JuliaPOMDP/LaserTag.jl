@@ -93,6 +93,4 @@ function Distributions.pdf(d::LTObsDist{DESPOTEmu}, m::DMeas)
     return p
 end
 
-function POMDPs.observation(p::LaserTagPOMDP{M}, sp::LTState) where M
-    return LTObsDist(p.dcache[sp], p.obs_model)
-end
+POMDPs.observation(p::LaserTagPOMDP, sp::LTState) = LTObsDist(p.dcache[sp], p.obs_model)
