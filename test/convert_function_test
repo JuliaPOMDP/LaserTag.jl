@@ -1,0 +1,23 @@
+using POMDPs, POMDPSimulators, POMDPModelTools
+using POMDPModels
+using LaserTag
+using Random
+using Test
+
+
+rng = MersenneTwister(7)
+pomdp = gen_lasertag(rng=rng, robot_position_known=true)
+b0 = initialstate(pomdp)
+
+
+nb_test_sample = 10000
+for i in 1:nb_test_sample
+    s = rand(b0)
+    v_s = convert_s(Vector{Float64}, s, pomdp)
+    s_back = convert_s(LTState, v_s, pomdp)
+    @test s_back == s
+end
+
+
+
+println("test finish")
