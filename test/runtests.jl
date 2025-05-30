@@ -57,14 +57,15 @@ for dir in 1:8
     @test total == N
 end
 
-# check convert_s function 
 @testset "convert_s" begin
-    # convert from LTState to Vector{Float64}
     s_test = rand(rng, initialstate(p))
-    v_s_test = convert_s(Vector{Float64}, s_test, p)
-    # convert from Vector{Float64} to LTState
-    s_back = convert_s(LTState, v_s_test, p)
-    @test s_back == s_test
+    
+    for VT in [Vector{Float64}, SVector]
+        v_s_test = convert_s(VT, s_test, p)
+        @test v_s_test isa VT
+        s_back = convert_s(LTState, v_s_test, p)
+        @test s_back == s_test
+    end
 end
 
 pol = RandomPolicy(p, rng=MersenneTwister(1))
