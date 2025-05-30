@@ -139,13 +139,15 @@ end
 
 # add a function to transform a LTState to a vector 
 function POMDPs.convert_s(T::Type{<:AbstractArray}, s::LTState, p::LaserTagPOMDP)
-    return convert(T, vcat(s.robot, s.opponent, s.terminal))
+    vals = SVector{5, Float64}(s.robot..., s.opponent..., s.terminal)
+    return convert(T, vals)
 end
 
-# transform a vector to a LTState
-function POMDPs.convert_s(T::Type{LTState}, v::AbstractArray{Float64}, p::LaserTagPOMDP)
+# add a function to transform a vector to a LTState
+function POMDPs.convert_s(T::Type{LTState}, v::AbstractArray, p::LaserTagPOMDP)
     return LTState(Coord(v[1], v[2]), Coord(v[3], v[4]), v[5])
 end
+
 
 POMDPs.isterminal(p::LaserTagPOMDP, s::LTState) = s.terminal
 POMDPs.discount(p::LaserTagPOMDP) = p.discount

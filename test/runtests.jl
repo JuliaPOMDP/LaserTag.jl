@@ -21,14 +21,6 @@ tikz_pic(LaserTagVis(p))
 # discrete
 p = gen_lasertag()
 
-# check convert_s function 
-b0 = initialstate(p)
-s_test = rand(b0)
-v_s_test = convert_s(Vector{Float64}, s_test, p)
-s_back = convert_s(LTState, v_s_test, p)
-@test s_back == s_test
-
-
 # check observation model consistency
 rng = MersenneTwister(12)
 N = 1_000_000
@@ -63,6 +55,16 @@ for dir in 1:8
         end
     end
     @test total == N
+end
+
+# check convert_s function 
+@testset "convert_s" begin
+    # convert from LTState to Vector{Float64}
+    s_test = rand(rng, initialstate(p))
+    v_s_test = convert_s(Vector{Float64}, s_test, p)
+    # convert from Vector{Float64} to LTState
+    s_back = convert_s(LTState, v_s_test, p)
+    @test s_back == s_test
 end
 
 pol = RandomPolicy(p, rng=MersenneTwister(1))
