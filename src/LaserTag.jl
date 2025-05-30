@@ -2,13 +2,12 @@ module LaserTag
 
 # package code goes here
 using POMDPs
-using POMDPModelTools
+using POMDPTools
 using Random
 using Printf
 using StaticArrays
 using SpecialFunctions
 using AutoHashEquals
-using POMDPSimulators
 using Parameters
 using StatsBase
 using Distributions

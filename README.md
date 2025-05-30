@@ -6,4 +6,11 @@ The Laser Tag Problem from http://bigbird.comp.nus.edu.sg/m2ap/wordpress/wp-cont
 
 ![image](https://user-images.githubusercontent.com/4240491/181133301-11704255-3e1a-4ec0-957a-8024d8159a8a.png)
 
+## Installation
+
+Note: This package is not currently registered (because the name is not suitable). To install it from the julia REPL, use
+```
+] add https://github.com/JuliaPOMDP/LaserTag.jl.git
+```
+
 See [POMDP Gallery](https://github.com/JuliaPOMDP/POMDPGallery.jl#lasertag) for usage.
