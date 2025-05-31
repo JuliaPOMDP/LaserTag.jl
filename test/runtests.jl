@@ -5,12 +5,13 @@ using POMDPModels
 using POMDPTools
 using ParticleFilters
 using POMDPs
+using StableRNGs
 
 @time p = gen_lasertag()
 
-pol = RandomPolicy(p, rng=MersenneTwister(1))
+pol = RandomPolicy(p, rng=StableRNG(1))
 
-sim = HistoryRecorder(max_steps=10, rng=MersenneTwister(2))
+sim = HistoryRecorder(max_steps=10, rng=StableRNG(2))
 
 filter = BootstrapFilter(p, 10000)
 
@@ -22,9 +23,11 @@ tikz_pic(LaserTagVis(p))
 p = gen_lasertag()
 
 # check observation model consistency
-rng = MersenneTwister(12)
+rng = StableRNG(13)
 N = 1_000_000
 s = rand(rng, initialstate(p))
+@assert !isterminal(p, s)
+display(s)
 od = observation(p, s)
 obs = [rand(rng, od) for i in 1:N]
 for dir in 1:8
@@ -43,8 +46,7 @@ for dir in 1:8
         if r == 0
             prob = LaserTag.cdf(od.model.cdf, dir, n_clear_cells(od.distances, dir), 0)
         else
-            prob = (LaserTag.cdf(od.model.cdf, dir, n_clear_cells(od.distances, dir), r) - 
-                 LaserTag.cdf(od.model.cdf, dir, n_clear_cells(od.distances, dir), r-1))
+            prob = LaserTag.cdf(od.model.cdf, dir, n_clear_cells(od.distances, dir), r) - LaserTag.cdf(od.model.cdf, dir, n_clear_cells(od.distances, dir), r-1)
         end
         try
             @test isapprox(prob*N, count, atol=10, rtol=0.1)
@@ -68,9 +70,9 @@ end
     end
 end
 
-pol = RandomPolicy(p, rng=MersenneTwister(1))
+pol = RandomPolicy(p, rng=StableRNG(1))
 
-sim = HistoryRecorder(max_steps=10, rng=MersenneTwister(2))
+sim = HistoryRecorder(max_steps=10, rng=StableRNG(2))
 
 filter = BootstrapFilter(p, 10000)
 
@@ -86,10 +88,10 @@ catch ex
           error=sprint(showerror, ex))
 end
 
-s = rand(MersenneTwister(4), initialstate(p))
-@inferred @gen(:sp, :o, :r)(p, s, 1, MersenneTwister(4))
+s = rand(StableRNG(4), initialstate(p))
+@inferred @gen(:sp, :o, :r)(p, s, 1, StableRNG(4))
 
-sp, o, r = @gen(:sp, :o, :r)(p, s, 1, MersenneTwister(4))
+sp, o, r = @gen(:sp, :o, :r)(p, s, 1, StableRNG(4))
 @inferred observation(p, s, 1, sp)
 
 show(stdout, MIME("text/plain"), LaserTagVis(cpp_emu_lasertag(4)))
