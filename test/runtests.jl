@@ -6,6 +6,7 @@ using POMDPTools
 using ParticleFilters
 using POMDPs
 using StableRNGs
+using StaticArrays
 
 @time p = gen_lasertag()
 
