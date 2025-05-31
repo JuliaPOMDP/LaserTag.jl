@@ -6,6 +6,7 @@ using POMDPTools
 using ParticleFilters
 using POMDPs
 using StableRNGs
+using StaticArrays
 
 @time p = gen_lasertag()
 
@@ -57,6 +58,17 @@ for dir in 1:8
         end
     end
     @test total == N
+end
+
+@testset "convert_s" begin
+    s_test = rand(rng, initialstate(p))
+    
+    for VT in [Vector{Float64}, SVector]
+        v_s_test = convert_s(VT, s_test, p)
+        @test v_s_test isa VT
+        s_back = convert_s(LTState, v_s_test, p)
+        @test s_back == s_test
+    end
 end
 
 pol = RandomPolicy(p, rng=StableRNG(1))
