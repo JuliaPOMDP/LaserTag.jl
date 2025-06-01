@@ -1,7 +1,7 @@
 name = "LaserTag"
 uuid = "041f53e1-e4f8-54ec-814d-e9e995aa38d4"
 repo = "https://github.com/zsunberg/LaserTag.jl"
-version = "0.1.3"
+version = "0.1.4"
 
 [deps]
 AutoHashEquals = "15f4f7f2-30c1-5605-9d31-71845cf9641f"
